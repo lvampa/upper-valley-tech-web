@@ -1,6 +1,8 @@
+import { createElement, type ReactNode } from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useEvents } from '@lib/useEvents.ts';
+import { EventsDataProvider } from '@lib/EventsDataContext.tsx';
 import { fetchEvents } from '@lib/api.ts';
 import { type Event } from '@lib/types.ts';
 
@@ -42,6 +44,20 @@ describe('useEvents', () => {
         expect(result.current.status).toBe('error');
       });
       expect(result.current.events).toEqual([]);
+    });
+  });
+
+  describe('given a build-time seed via context', () => {
+    it('starts in success with the seeded events (SSR parity)', () => {
+      // given
+      mockFetch.mockResolvedValue(sample);
+      const wrapper = ({ children }: { children: ReactNode }) =>
+        createElement(EventsDataProvider, { value: sample, children });
+      // when
+      const { result } = renderHook(() => useEvents(), { wrapper });
+      // then — the synchronous first render already carries the seed
+      expect(result.current.events).toEqual(sample);
+      expect(result.current.status).toBe('success');
     });
   });
 });
