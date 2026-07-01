@@ -20,12 +20,12 @@ interface NavProps {
 
 export function Nav({
   links = [
-    { label: 'Events', href: '#/events' },
-    { label: 'About', href: '#/about' },
+    { label: 'Events', href: '/events' },
+    { label: 'About', href: '/about' },
   ],
   active,
-  cta = { label: 'Join mailing list', href: '#/#subscribe' },
-  logoHref = '#/',
+  cta = { label: 'Join mailing list', href: '/#subscribe' },
+  logoHref = '/',
   style,
 }: NavProps) {
   return (

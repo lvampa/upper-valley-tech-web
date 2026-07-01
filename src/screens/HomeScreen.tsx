@@ -53,7 +53,7 @@ export function HomeScreen() {
         <section style={{ maxWidth: 520, margin: '52px auto 0' }}>
           <SectionLabel
             action={
-              <Button variant="text" href="#/events">
+              <Button variant="text" href="/events">
                 See all events →
               </Button>
             }

@@ -68,13 +68,13 @@ export function AboutScreen() {
             First-time speakers are the whole point — you don't need to be an expert.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
-            <Button variant="text" href="#/events">
+            <Button variant="text" href="/events">
               → See upcoming events
             </Button>
-            <Button variant="text" href="#/about">
+            <Button variant="text" href="/about">
               → Pitch a talk
             </Button>
-            <Button variant="text" href="#/code-of-conduct">
+            <Button variant="text" href="/code-of-conduct">
               → Read the code of conduct
             </Button>
           </div>

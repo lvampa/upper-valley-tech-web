@@ -112,7 +112,7 @@ export function EventsScreen() {
             <p style={{ color: 'var(--ink-2)', fontSize: 13, marginBottom: 14 }}>
               Five minutes, any topic you're into. First-time speakers especially welcome.
             </p>
-            <Button variant="ghost" href="#/about">
+            <Button variant="ghost" href="/about">
               Pitch a talk →
             </Button>
           </Card>
