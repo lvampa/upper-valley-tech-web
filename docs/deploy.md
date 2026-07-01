@@ -76,3 +76,33 @@ automatic); this repoints the apex to Pages.
 The events API (read endpoint + organizer MCP) is a separate service —
 [`upper-valley-tech-events-mcp`](https://github.com/lvampa/upper-valley-tech-events-mcp) — with its
 own deploy checklist.
+
+## Events auto-rebuild
+
+The site is pre-rendered: at build time `scripts/prerender.mjs` fetches the
+events list and bakes it into `dist/events/index.html` (plus `Event` JSON-LD) so
+search engines and non-JS AI crawlers see real event content. That snapshot is
+only as fresh as the last build.
+
+To refresh it when events change, the events service triggers a rebuild via a
+GitHub **`repository_dispatch`** event:
+
+```
+POST https://api.github.com/repos/<owner>/<repo>/dispatches
+Authorization: Bearer <token>
+Accept: application/vnd.github+json
+Content-Type: application/json
+
+{ "event_type": "events-updated" }
+```
+
+- `<token>` — a fine-grained PAT scoped to this repo with **Contents: write**
+  (the permission the dispatch endpoint requires), or a classic PAT with the
+  `repo` scope. Store it as a secret in the events service, never in this repo.
+- This fires `.github/workflows/deploy.yml` (its `repository_dispatch:
+  events-updated` trigger), which runs the same build + Cloudflare Pages deploy
+  as a push to `production`, re-baking the snapshot.
+- The **sender** lives in the separate `upper-valley-tech-events-mcp` service
+  and is out of scope for this repo — this section documents the contract only.
+- Browsers still get live data regardless: the client re-fetches events on load
+  and replaces the baked snapshot. The rebuild only matters for crawlers.

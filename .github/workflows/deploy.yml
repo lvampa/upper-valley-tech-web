@@ -3,6 +3,11 @@ name: Deploy
 on:
   push:
     branches: [production]
+  # The events service fires this (event type `events-updated`) when events
+  # change, so the pre-rendered /events snapshot + Event JSON-LD stay fresh
+  # between code pushes. See docs/deploy.md ("Events auto-rebuild").
+  repository_dispatch:
+    types: [events-updated]
 
 # Deploy tokens/actions don't need write access to the repo.
 permissions:
