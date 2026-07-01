@@ -14,11 +14,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "ladle": "ladle serve",
-    "ladle:build": "ladle build"
+    "ladle:build": "ladle build",
+    "gen:og": "node scripts/gen-og-image.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@ladle/react": "^5.1.1",
+    "@resvg/resvg-js": "^2.6.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
