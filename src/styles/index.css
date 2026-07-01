@@ -1,0 +1,121 @@
+@import './tokens/fonts.css';
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/effects.css';
+
+html,
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+.uvt-input::placeholder {
+  color: var(--ink-3);
+  opacity: 1;
+}
+
+/* ---- Hero title ---- */
+.home-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 52px;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  margin: 24px 0 0;
+}
+@media (min-width: 720px) {
+  .home-title {
+    font-size: 80px;
+  }
+}
+
+/* ---- Page title (Events / About / Code of conduct) ---- */
+.page-title {
+  font: var(--display-2);
+  letter-spacing: var(--track-display-2);
+  margin: 14px 0 0;
+}
+
+/* ---- Display headings inside cards/sections ---- */
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.015em;
+}
+
+/* ---- Coral text link ---- */
+.link-coral {
+  color: var(--coral);
+  text-decoration: none;
+}
+.link-coral:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- Balanced text wrap (textWrap missing from current CSSProperties type) ---- */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* ---- Two-column grids ---- */
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .grid-2col {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.grid-events {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: start;
+}
+@media (min-width: 720px) {
+  .grid-events {
+    grid-template-columns: 1.05fr 1fr;
+  }
+}
+
+/* ---- Responsive spacing ---- */
+.page-gutter {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+@media (min-width: 640px) {
+  .page-gutter {
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+}
+
+.nav-pad {
+  padding: 20px;
+}
+@media (min-width: 640px) {
+  .nav-pad {
+    padding: 24px 40px;
+  }
+}

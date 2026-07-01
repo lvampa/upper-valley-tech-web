@@ -1,0 +1,11 @@
+:root {
+  --font-display: 'Sora', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --display-2: 600 48px/1 var(--font-display);
+
+  --track-display-2: -0.025em;
+
+  --w-semibold: 600;
+}

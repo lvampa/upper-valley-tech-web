@@ -1,0 +1,31 @@
+:root {
+  --paper: #161310;
+  --paper-2: #1d1916;
+  --paper-3: #221d1a;
+
+  --ink: #f4f1ec;
+  --ink-2: rgba(244, 241, 236, 0.72);
+  --ink-3: rgba(244, 241, 236, 0.5);
+  --ink-4: rgba(244, 241, 236, 0.22);
+  --line: rgba(244, 241, 236, 0.1);
+  --line-2: rgba(244, 241, 236, 0.18);
+
+  --coral: #ff7a59;
+  --coral-2: #ff9a7a;
+  --amber: #ffd24a;
+
+  --success: #54d18a;
+  --error: #ff6b7d;
+
+  --surface-card: var(--paper-2);
+  --on-accent: #2b1108;
+
+  --surface-success: rgba(84, 209, 138, 0.12);
+  --surface-error: rgba(255, 107, 125, 0.12);
+  --border-success: rgba(84, 209, 138, 0.55);
+  --border-error: rgba(255, 107, 125, 0.6);
+  --on-success: #06301b;
+
+  --grad-brand: linear-gradient(135deg, var(--coral), var(--amber));
+  --grad-btn: linear-gradient(180deg, var(--coral-2), var(--coral));
+}
