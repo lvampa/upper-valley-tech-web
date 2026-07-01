@@ -24,32 +24,52 @@ time, not read from a file:
 
 ## Hosting
 
-The site is a static SPA on **Cloudflare Pages**, deployed via **git
-integration**: pushing to `main` builds and deploys production; branches/PRs get
-preview deployments. (Requires the repo to be pushed to GitHub.)
+The site is a static SPA on **Cloudflare Pages** (a Direct-Upload project named
+`uppervalley-tech`). It is **not** git-integrated — Cloudflare has no access to
+the GitHub repo. Instead, deploys run from GitHub Actions using a scoped
+Cloudflare API token, so the trust flows one way (GitHub → Cloudflare).
 
-### One-time Pages setup
+### Automated deploy (CI)
 
-Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** →
-pick this repo, then set:
+Two workflows:
 
-- Production branch: `main`
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Root directory: `/`
-- Node version: from `.nvmrc` (`22`)
-- `VITE_EVENTS_API_URL`: baked in from `config/.env.production` (or set as a
-  Pages env var)
+- **`.github/workflows/ci.yml`** — runs on every PR: format / lint / typecheck /
+  test.
+- **`.github/workflows/deploy.yml`** — runs on push to **`production`**: builds
+  and deploys:
 
-Then add the custom domain **`uppervalleytech.org`** in the Pages project.
+  ```
+  wrangler pages deploy dist --project-name=uppervalley-tech --branch=production
+  ```
 
-### Manual deploy (fallback)
+Gating is via branch protection (below): PRs must pass `checks` before merging
+to `production`, so only vetted code reaches the deploy workflow.
 
-Deploy the current working tree without pushing:
+**Required GitHub repo secrets** (Settings → Secrets and variables → Actions):
+
+- `CLOUDFLARE_API_TOKEN` — a custom token scoped to **Account · Cloudflare Pages
+  · Edit**, restricted to your account. Nothing broader.
+- `CLOUDFLARE_ACCOUNT_ID` — from Workers & Pages → account overview.
+
+Also set the Pages project's **production branch to `production`** so
+`--branch=production` deploys register as production (the custom domain serves
+the latest production deployment). Recommended: branch-protect `production` to
+require the `checks` job before merge.
+
+### Manual deploy (from local)
 
 ```bash
 ./scripts/deploy.sh   # npm run build + wrangler pages deploy dist
 ```
+
+This uses your `wrangler login` session — **no API token / secrets needed
+locally**. The secrets above are only for CI.
+
+### Custom domain
+
+Add **`uppervalleytech.org`** in the Pages project → Custom domains. Since the
+zone is on Cloudflare, it auto-creates the DNS record and TLS cert (SSL is
+automatic); this repoints the apex to Pages.
 
 ## Events API
 
