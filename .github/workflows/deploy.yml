@@ -4,6 +4,16 @@ on:
   push:
     branches: [production]
 
+# Deploy tokens/actions don't need write access to the repo.
+permissions:
+  contents: read
+
+# One production deploy at a time; a newer push cancels an in-flight older run
+# so a stale build can't land on production after a newer one.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,6 +28,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # Registers as a PRODUCTION deployment only if the Pages project's
+      # production branch is set to `production` — otherwise this uploads a
+      # preview and the custom domain won't update. See docs/deploy.md.
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
