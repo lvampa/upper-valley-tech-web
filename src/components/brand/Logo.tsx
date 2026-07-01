@@ -18,7 +18,7 @@ const SIZES = {
 
 function Glyph({ size }: { size: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path
         d="M1 13 L5 6 L8 10 L11 4 L15 13"
         stroke="var(--on-accent)"
@@ -39,6 +39,7 @@ export function Logo({ size = 'md', wordmark = true, href, style, className }: L
     <Tag
       href={href}
       className={className}
+      aria-label={showWord ? undefined : 'Upper Valley Tech'}
       style={{
         display: 'inline-flex',
         alignItems: 'center',

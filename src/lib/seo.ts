@@ -61,12 +61,12 @@ export function normalizePath(pathname: string): string {
 
 export function getRouteMeta(pathname: string): RouteMeta {
   const path = normalizePath(pathname);
-  const entry = META[path] ?? META['/404'];
-  const canonicalPath = META[path] ? path : '/404';
+  const key = path in META ? path : '/404';
+  const entry = META[key];
   return {
     title: entry.title,
     description: entry.description,
-    canonical: absoluteUrl(canonicalPath),
+    canonical: absoluteUrl(key),
     robots: entry.robots ?? 'index, follow',
   };
 }

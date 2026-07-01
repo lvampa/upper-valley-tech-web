@@ -51,6 +51,13 @@ export default tseslint.config(
     files: ['*.{js,ts}'],
     extends: [tseslint.configs.disableTypeChecked],
   },
+  // Node build scripts (prerender, OG image gen) run under Node, not the browser.
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
   // Must be last: turns off ESLint rules that conflict with Prettier formatting.
   eslintConfigPrettier,
 );
