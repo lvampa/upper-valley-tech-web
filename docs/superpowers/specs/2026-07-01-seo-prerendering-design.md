@@ -40,6 +40,7 @@ list intact, and fits the existing hand-rolled router. Cost: ~150 lines of
 SSR/hydration/head plumbing we own and test.
 
 Rejected alternatives:
+
 - **`vite-react-ssg`** — less custom code but forces react-router adoption and
   deep Vite SSR coupling (rolldown-vite compatibility risk).
 - **Framework migration (Astro/Next)** — best-in-class SEO defaults but a full
@@ -49,12 +50,12 @@ Rejected alternatives:
 
 ### 1. Path-based routing (replaces hash routing)
 
-| Screen          | Old hash            | New path             |
-| --------------- | ------------------- | -------------------- |
-| Home            | `#/`                | `/`                  |
-| Events          | `#/events`          | `/events`            |
-| About           | `#/about`           | `/about`             |
-| Code of Conduct | `#/code-of-conduct` | `/code-of-conduct`   |
+| Screen          | Old hash            | New path           |
+| --------------- | ------------------- | ------------------ |
+| Home            | `#/`                | `/`                |
+| Events          | `#/events`          | `/events`          |
+| About           | `#/about`           | `/about`           |
+| Code of Conduct | `#/code-of-conduct` | `/code-of-conduct` |
 
 - `App.tsx` router switches from `location.hash` to `location.pathname`.
   Client-side navigation uses History API `pushState` + a `popstate` listener
@@ -75,7 +76,7 @@ Rejected alternatives:
 
 - `src/entry-server.tsx` exports `render(pathname, data)` →
   `{ html, headTags }`, calling `renderToString(<App location={pathname}
-  initialData={data} />)`.
+initialData={data} />)`.
 - `src/main.tsx` switches `createRoot(...).render(...)` to
   `hydrateRoot(root, ...)`. Initial event data is read from an inline
   `window.__UVT_DATA__` script written by the prerender step; the client

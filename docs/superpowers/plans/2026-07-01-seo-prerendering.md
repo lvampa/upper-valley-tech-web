@@ -24,6 +24,7 @@
 ## File Structure
 
 **Create:**
+
 - `src/lib/site.ts` — site identity + SEO constants (single source of truth).
 - `src/lib/seo.ts` — per-route metadata, JSON-LD builders, `renderHeadTags()`, client head sync.
 - `src/lib/prerender.ts` — pure helpers: `serializeInitialData`, `buildSitemap`, `renderDocument` (tested in vitest, re-exported to the `.mjs` script).
@@ -37,6 +38,7 @@
 - `public/og-image.png` — generated, committed.
 
 **Modify:**
+
 - `src/App.tsx` — path-based screen resolution via `router.tsx`; provide `EventsDataContext`; drop hash logic.
 - `src/main.tsx` — read `window.__UVT_DATA__`; `hydrateRoot` in prod / `createRoot` in dev.
 - `src/lib/useEvents.ts` — seed initial state from `EventsDataContext`.
@@ -53,10 +55,12 @@
 ## Task 1: Site constants + SEO metadata/JSON-LD
 
 **Files:**
+
 - Create: `src/lib/site.ts`, `src/lib/seo.ts`
 - Test: `src/lib/seo.test.ts`
 
 **Interfaces:**
+
 - Consumes: `Event` (`src/lib/types.ts`), `CONTACT_EMAIL` (`src/lib/constants.ts`).
 - Produces:
   - `site.ts`: `SITE_URL`, `SITE_NAME`, `SITE_TAGLINE`, `FOUNDER`, `FOUNDING_YEAR`, `ORG_EMAIL`, `REGION_PHRASE`, `OG_IMAGE`, `OG_IMAGE_WIDTH`, `OG_IMAGE_HEIGHT` (all string/number consts).
@@ -95,7 +99,13 @@ import { SITE_ROUTES, getRouteMeta, buildJsonLd, renderHeadTags } from './seo.ts
 import type { Event } from './types.ts';
 
 const sampleEvents: Event[] = [
-  { id: 'e1', date: '2099-09-01', title: 'September Meetup', location: 'Lebanon, NH', time: '6:30 PM' },
+  {
+    id: 'e1',
+    date: '2099-09-01',
+    title: 'September Meetup',
+    location: 'Lebanon, NH',
+    time: '6:30 PM',
+  },
 ];
 
 describe('seo route metadata', () => {
@@ -167,8 +177,17 @@ Expected: FAIL — `Cannot find module './seo.ts'`.
 // the client (syncClientHead → keeps <title> correct after hydration).
 import type { Event } from './types.ts';
 import {
-  SITE_URL, SITE_NAME, SITE_TAGLINE, FOUNDER, FOUNDING_YEAR, ORG_EMAIL,
-  REGION_PHRASE, OG_IMAGE, OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT, absoluteUrl,
+  SITE_URL,
+  SITE_NAME,
+  SITE_TAGLINE,
+  FOUNDER,
+  FOUNDING_YEAR,
+  ORG_EMAIL,
+  REGION_PHRASE,
+  OG_IMAGE,
+  OG_IMAGE_WIDTH,
+  OG_IMAGE_HEIGHT,
+  absoluteUrl,
 } from './site.ts';
 
 export interface RouteMeta {
@@ -260,16 +279,33 @@ export function buildJsonLd(pathname: string, events: Event[]): object[] {
       ];
     case '/events':
       return [
-        { '@context': 'https://schema.org', '@type': 'CollectionPage', name: getRouteMeta(path).title, url: getRouteMeta(path).canonical },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: getRouteMeta(path).title,
+          url: getRouteMeta(path).canonical,
+        },
         ...events.map(eventLd),
       ];
     case '/about':
       return [
-        { '@context': 'https://schema.org', '@type': 'AboutPage', name: getRouteMeta(path).title, url: getRouteMeta(path).canonical },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'AboutPage',
+          name: getRouteMeta(path).title,
+          url: getRouteMeta(path).canonical,
+        },
         organizationLd(),
       ];
     case '/code-of-conduct':
-      return [{ '@context': 'https://schema.org', '@type': 'WebPage', name: getRouteMeta(path).title, url: getRouteMeta(path).canonical }];
+      return [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: getRouteMeta(path).title,
+          url: getRouteMeta(path).canonical,
+        },
+      ];
     default:
       return [];
   }
@@ -343,11 +379,13 @@ git commit -m "feat(seo): per-route metadata, JSON-LD, and head rendering"
 ## Task 2: Path router + 404 screen + link migration
 
 **Files:**
+
 - Create: `src/lib/router.tsx`, `src/screens/NotFoundScreen.tsx`
 - Modify: `src/App.tsx`, `src/components/navigation/Nav.tsx`, `src/components/navigation/Footer.tsx`, `src/screens/HomeScreen.tsx`, `public/metadata.html`
 - Test: `src/lib/router.test.tsx`, existing `src/screens/HomeScreen.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `normalizePath` (`src/lib/seo.ts`), screen components.
 - Produces: `resolveRoute(pathname: string): { Screen: ComponentType; active?: string }` from `router.tsx`.
 
@@ -391,9 +429,21 @@ import { PageHeading, Period } from '@components/core/PageHeading.tsx';
 export function NotFoundScreen() {
   return (
     <section style={{ padding: '56px 0' }}>
-      <PageHeading kicker="404" title={<>Page not found<Period /></>} />
+      <PageHeading
+        kicker="404"
+        title={
+          <>
+            Page not found
+            <Period />
+          </>
+        }
+      />
       <p style={{ color: 'var(--ink-2)', marginTop: 16 }}>
-        That page doesn’t exist. <a href="/" style={{ color: 'var(--coral)' }}>Back to home</a>.
+        That page doesn’t exist.{' '}
+        <a href="/" style={{ color: 'var(--coral)' }}>
+          Back to home
+        </a>
+        .
       </p>
     </section>
   );
@@ -444,8 +494,7 @@ interface AppProps {
 }
 
 export function App({ location, initialEvents = null }: AppProps) {
-  const pathname =
-    location ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
+  const pathname = location ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
   const { Screen, active } = resolveRoute(pathname);
 
   return (
@@ -463,6 +512,7 @@ export function App({ location, initialEvents = null }: AppProps) {
 - [ ] **Step 6: Update `src/components/navigation/Nav.tsx` link defaults**
 
 Change the defaults:
+
 ```tsx
   links = [
     { label: 'Events', href: '/events' },
@@ -510,11 +560,13 @@ git commit -m "feat(routing): path-based routes, 404 screen, real-URL links"
 ## Task 3: Events seed context + hydration-safe useEvents
 
 **Files:**
+
 - Create: `src/lib/EventsDataContext.tsx`
 - Modify: `src/lib/useEvents.ts`, `src/main.tsx`
 - Test: `src/lib/useEvents.test.ts` (extend existing)
 
 **Interfaces:**
+
 - Consumes: `Event` (`src/lib/types.ts`), `fetchEvents` (`src/lib/api.ts`).
 - Produces: `EventsDataProvider` + `useEventsSeed()` from `EventsDataContext.tsx`; `window.__UVT_DATA__` global shape `{ events: Event[] }`.
 
@@ -551,7 +603,13 @@ import { useEvents } from './useEvents.ts';
 import type { Event } from './types.ts';
 
 const seed: Event[] = [
-  { id: 's1', date: '2099-01-01', title: 'Seeded Meetup', location: 'Hanover, NH', time: '6:00 PM' },
+  {
+    id: 's1',
+    date: '2099-01-01',
+    title: 'Seeded Meetup',
+    location: 'Hanover, NH',
+    time: '6:00 PM',
+  },
 ];
 
 it('starts in success with the seeded events when a seed is provided', () => {
@@ -670,10 +728,12 @@ git commit -m "feat(ssr): seed events for hydration + hydrateRoot in prod"
 ## Task 4: SSR entry + prerender pure helpers
 
 **Files:**
+
 - Create: `src/lib/prerender.ts`, `src/entry-server.tsx`
 - Test: `src/lib/prerender.test.ts`, `src/entry-server.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `App`, `renderHeadTags`, `SITE_ROUTES`, `Event`, `absoluteUrl`.
 - Produces:
   - `prerender.ts`: `serializeInitialData(data: { events: Event[] }): string`; `buildSitemap(routes: string[], lastmod: string): string`; `renderDocument(opts: { template: string; appHtml: string; headHtml: string; dataScript: string }): string`.
@@ -768,7 +828,10 @@ import { App } from './App.tsx';
 import { type Event } from './lib/types.ts';
 import { renderHeadTags } from './lib/seo.ts';
 
-export function render(pathname: string, data: { events: Event[] }): { appHtml: string; headHtml: string } {
+export function render(
+  pathname: string,
+  data: { events: Event[] },
+): { appHtml: string; headHtml: string } {
   const appHtml = renderToString(
     <StrictMode>
       <App location={pathname} initialEvents={data.events} />
@@ -790,7 +853,13 @@ import { render } from './entry-server.tsx';
 import type { Event } from './lib/types.ts';
 
 const events: Event[] = [
-  { id: 'e1', date: '2099-09-01', title: 'September Meetup', location: 'Lebanon, NH', time: '6:30 PM' },
+  {
+    id: 'e1',
+    date: '2099-09-01',
+    title: 'September Meetup',
+    location: 'Lebanon, NH',
+    time: '6:30 PM',
+  },
 ];
 
 describe('render', () => {
@@ -826,11 +895,13 @@ git commit -m "feat(ssr): server render entry + prerender helpers"
 ## Task 5: Prerender script, build pipeline, robots.txt
 
 **Files:**
+
 - Create: `scripts/prerender.mjs`, `public/robots.txt`
 - Modify: `package.json`
 - Test: manual build verification (no unit test — the pure logic is covered in Tasks 1/4).
 
 **Interfaces:**
+
 - Consumes: built SSR bundle at `dist/server/entry-server.js` exporting `render`, `SITE_ROUTES`, `serializeInitialData`, `buildSitemap`, `renderDocument`; client template at `dist/index.html`; `fetchEvents` behavior replicated via a plain `fetch` of `${VITE_EVENTS_API_URL}/events`.
 
 - [ ] **Step 1: Create `public/robots.txt`**
@@ -920,7 +991,11 @@ for (const route of SITE_ROUTES) {
 // 404 page (Cloudflare Pages serves dist/404.html on unknown paths).
 {
   const { appHtml, headHtml } = render('/404', data);
-  await writeFile(path.join(dist, '404.html'), renderDocument({ template, appHtml, headHtml, dataScript }), 'utf-8');
+  await writeFile(
+    path.join(dist, '404.html'),
+    renderDocument({ template, appHtml, headHtml, dataScript }),
+    'utf-8',
+  );
 }
 
 // Sitemap — build date from the Node runtime clock (ISO date only).
@@ -942,6 +1017,7 @@ console.log('[prerender] done');
 - [ ] **Step 4: Run a full build and verify output**
 
 Run:
+
 ```bash
 VITE_EVENTS_API_URL=https://api.uppervalleytech.org npm run build
 ls dist dist/events dist/about dist/code-of-conduct
@@ -950,16 +1026,19 @@ grep -l 'application/ld+json' dist/events/index.html
 test -f dist/robots.txt && test -f dist/sitemap.xml && test -f dist/404.html && echo "static files OK"
 test ! -d dist/server && echo "ssr bundle cleaned OK"
 ```
+
 Expected: each route directory has an `index.html`; home contains `Organization`; events page contains JSON-LD; `robots.txt`, `sitemap.xml`, `404.html` exist; `dist/server` removed.
 
 - [ ] **Step 5: Verify hydration locally**
 
 Run:
+
 ```bash
 npm run preview
 # Open the printed URL, view source on /events — confirm event titles are in the
 # raw HTML (not just after JS). Confirm no hydration error in the console.
 ```
+
 Expected: event content present in served HTML; no hydration mismatch errors.
 
 - [ ] **Step 6: Commit**
@@ -974,6 +1053,7 @@ git commit -m "feat(build): static prerender pipeline, robots.txt, sitemap"
 ## Task 6: OG social-card image
 
 **Files:**
+
 - Create: `scripts/gen-og-image.mjs`, `public/og-image.png`
 - Modify: `package.json` (add `@resvg/resvg-js` devDependency + `gen:og` script)
 
@@ -1014,7 +1094,11 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
 </svg>`;
 
 const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
-const out = path.join(path.dirname(fileURLToPath(new URL('../', import.meta.url))), 'public', 'og-image.png');
+const out = path.join(
+  path.dirname(fileURLToPath(new URL('../', import.meta.url))),
+  'public',
+  'og-image.png',
+);
 await writeFile(out, png);
 console.log(`wrote ${out} (${png.length} bytes)`);
 ```
@@ -1028,10 +1112,12 @@ console.log(`wrote ${out} (${png.length} bytes)`);
 - [ ] **Step 4: Generate and verify**
 
 Run:
+
 ```bash
 npm run gen:og
 file public/og-image.png   # expect: PNG image data, 1200 x 630
 ```
+
 Expected: a 1200×630 PNG is written.
 
 - [ ] **Step 5: Commit**
@@ -1046,6 +1132,7 @@ git commit -m "feat(seo): generated 1200x630 OG social-card image"
 ## Task 7: Events auto-rebuild webhook
 
 **Files:**
+
 - Modify: `.github/workflows/deploy.yml`, `docs/deploy.md`
 
 **Interfaces:** GitHub `repository_dispatch` event type `events-updated`.
@@ -1053,6 +1140,7 @@ git commit -m "feat(seo): generated 1200x630 OG social-card image"
 - [ ] **Step 1: Add the trigger to `.github/workflows/deploy.yml`**
 
 Change the `on:` block to also listen for the dispatch (keep the existing push trigger):
+
 ```yaml
 on:
   push:
@@ -1060,6 +1148,7 @@ on:
   repository_dispatch:
     types: [events-updated]
 ```
+
 No other job changes are needed — the build already fetches live events at build time, so a dispatch-triggered run redeploys a fresh snapshot.
 
 - [ ] **Step 2: Document the contract in `docs/deploy.md`** (append a section)
@@ -1101,6 +1190,7 @@ git commit -m "feat(ci): rebuild+redeploy on events-updated repository_dispatch"
 ## Task 8: Semantic HTML + accessibility verification
 
 **Files:**
+
 - Modify (as needed): `src/components/brand/Logo.tsx`, screens.
 - Test: existing suite.
 
@@ -1113,6 +1203,7 @@ Confirm: each screen renders exactly one `<h1>` (HomeScreen `home-title`; others
 - [ ] **Step 2: Give the `xl` Logo an accessible name** (wordmark hidden at `xl`)
 
 In `src/components/brand/Logo.tsx`, add an accessible label so the icon-only variant isn't an empty link/graphic:
+
 ```tsx
     <Tag
       href={href}
@@ -1124,9 +1215,11 @@ In `src/components/brand/Logo.tsx`, add an accessible label so the icon-only var
 - [ ] **Step 3: Run the full suite + typecheck + lint**
 
 Run:
+
 ```bash
 npm run typecheck && npm run lint && npx vitest run
 ```
+
 Expected: all pass.
 
 - [ ] **Step 4: Commit**
@@ -1143,4 +1236,7 @@ git commit -m "chore(a11y): accessible logo label + semantic HTML pass"
 - §1 mechanism (custom script): Tasks 4–5. §2 routing: Task 2. §3 SEO module: Task 1. §4 JSON-LD: Task 1. §5 robots/sitemap: Tasks 5. §6 remove cargo-cult tags: Task 2 Step 9. §7 OG image: Task 6. §8 auto-rebuild: Task 7. §9 semantic HTML: Task 8. §10 build pipeline: Task 5. Testing (§Testing): Tasks 1, 3, 4 unit tests + Task 5 build verification.
 - Known accepted risk (from spec): a build-time-vs-load-time clock difference straddling an event's date boundary can cause a one-off React hydration warning; auto-rebuild (Task 7) keeps the snapshot current. Not engineered around.
 - Extension resolution for `EventsDataContext` import (Task 3 Step 4): use the extension that resolves under the project's TS/vite config; adjust if the first choice fails.
+
+```
+
 ```

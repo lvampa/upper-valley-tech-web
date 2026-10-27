@@ -31,10 +31,6 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
 </svg>`;
 
 const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
-const out = path.join(
-  fileURLToPath(new URL('..', import.meta.url)),
-  'public',
-  'og-image.png',
-);
+const out = path.join(fileURLToPath(new URL('..', import.meta.url)), 'public', 'og-image.png');
 await writeFile(out, png);
 console.log(`wrote ${out} (${png.length} bytes)`);

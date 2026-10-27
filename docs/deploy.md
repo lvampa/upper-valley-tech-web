@@ -100,7 +100,7 @@ Content-Type: application/json
   (the permission the dispatch endpoint requires), or a classic PAT with the
   `repo` scope. Store it as a secret in the events service, never in this repo.
 - This fires `.github/workflows/deploy.yml` (its `repository_dispatch:
-  events-updated` trigger), which runs the same build + Cloudflare Pages deploy
+events-updated` trigger), which runs the same build + Cloudflare Pages deploy
   as a push to `production`, re-baking the snapshot.
 - The **sender** lives in the separate `upper-valley-tech-events-mcp` service
   and is out of scope for this repo — this section documents the contract only.

@@ -8,7 +8,9 @@ describe('serializeInitialData', () => {
   });
 
   it('escapes < so payload data cannot break out of the script tag', () => {
-    const hostile = { events: [{ id: 'x', date: '2099-01-01', title: '</script>', location: 'L', time: 't' }] };
+    const hostile = {
+      events: [{ id: 'x', date: '2099-01-01', title: '</script>', location: 'L', time: 't' }],
+    };
     const out = serializeInitialData(hostile);
     // Only the wrapper's own closing tag remains — the payload one is escaped.
     expect(out.match(/<\/script>/g)).toHaveLength(1);

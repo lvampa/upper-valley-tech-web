@@ -11,8 +11,7 @@ interface AppProps {
 }
 
 export function App({ location, initialEvents = null }: AppProps) {
-  const pathname =
-    location ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
+  const pathname = location ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
   const { Screen, active } = resolveRoute(pathname);
 
   return (
