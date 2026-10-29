@@ -39,7 +39,7 @@ export function HomeScreen() {
           className="text-balance"
           style={{ color: 'var(--ink-2)', fontSize: 18, maxWidth: 500, margin: '18px auto 0' }}
         >
-          Monthly meetup for tech-focused people in the Upper Valley.
+          Monthly tech focused meetup in the Upper Valley.
         </p>
       </section>
 
