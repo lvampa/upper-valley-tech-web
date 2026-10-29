@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Manual deploy from local. Normal deploys run in CI on merge to `production`
-# (.github/workflows/ci.yml). Use this to deploy the current working tree
+# (.github/workflows/deploy.yml). Use this to deploy the current working tree
 # without pushing. Requires `wrangler login` (or CLOUDFLARE_API_TOKEN set).
 #
 # The production API URL is injected here (not stored in a committed .env file);

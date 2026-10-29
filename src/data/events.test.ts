@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { selectNext, selectUpcoming, selectPast, eventDateParts } from '@data/events.ts';
 import { type Event } from '@lib/types.ts';
 
@@ -6,14 +6,7 @@ function ev(id: string, date: string): Event {
   return { id, date, title: id, location: 'Lebanon, NH', time: '6:30 PM' };
 }
 
-// Freeze "now" so past/upcoming is deterministic regardless of run date.
-beforeEach(() => {
-  vi.useFakeTimers();
-  vi.setSystemTime(new Date('2025-07-01T12:00:00'));
-});
-afterEach(() => {
-  vi.useRealTimers();
-});
+const now = new Date('2025-07-01T12:00:00');
 
 describe('selecting the next event', () => {
   describe('given a mix of past and future events', () => {
@@ -25,14 +18,14 @@ describe('selecting the next event', () => {
         ev('later', '2025-09-01'),
       ];
       // when
-      const next = selectNext(events);
+      const next = selectNext(events, now);
       // then
       expect(next?.id).toBe('soon');
     });
   });
   describe('given only past events', () => {
     it('returns undefined', () => {
-      expect(selectNext([ev('a', '2025-01-01')])).toBeUndefined();
+      expect(selectNext([ev('a', '2025-01-01')], now)).toBeUndefined();
     });
   });
 });
@@ -42,7 +35,7 @@ describe('selecting upcoming events', () => {
     // given
     const events = [ev('soon', '2025-07-16'), ev('later', '2025-09-01')];
     // when
-    const upcoming = selectUpcoming(events);
+    const upcoming = selectUpcoming(events, now);
     // then
     expect(upcoming.map((e) => e.id)).toEqual(['later']);
   });
@@ -57,7 +50,7 @@ describe('selecting past events', () => {
       ev('future', '2025-08-01'),
     ];
     // when
-    const past = selectPast(events);
+    const past = selectPast(events, now);
     // then
     expect(past.map((e) => e.id)).toEqual(['newer', 'older']);
   });

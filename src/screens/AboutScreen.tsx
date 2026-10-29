@@ -26,18 +26,14 @@ export function AboutScreen() {
       <section style={{ maxWidth: 600 }}>
         <p style={{ color: 'var(--ink-2)', fontSize: 16, marginTop: 16 }}>
           <span style={{ color: 'var(--ink)' }}>
-            Upper Valley Tech is a monthly meetup for the people building software around the
+            Upper Valley Tech is a monthly meetup for people in the tech space who live around the
             Connecticut River valley.
           </span>{' '}
-          Lebanon, Hanover, White River Junction, and everywhere in between.
+          Based out of Lebanon, NH, we welcome everyone to join us on a monthly basis.
         </p>
         <p style={{ color: 'var(--ink-2)', fontSize: 16, marginTop: 16 }}>
-          It started in 2025 as a simple idea: there are a lot of developers, founders, and
-          tinkerers up here, but no easy way to find each other. So we get a room, line up a handful
-          of five-minute talks, order pizza, and hang out. That's the whole thing.
-        </p>
-        <p style={{ color: 'var(--ink-2)', fontSize: 16, marginTop: 16 }}>
-          No tracks, no badges, no sponsor pitches. Just show up.
+          We're starting with a community gathering, but we're hoping to grow into mentorship,
+          hackathons, and fun hobby projects.
         </p>
       </section>
 
@@ -53,28 +49,22 @@ export function AboutScreen() {
               <div style={{ color: 'var(--ink-3)', fontSize: 13 }}>Organizer · founded 2025</div>
             </div>
           </div>
-          <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55, marginTop: 16 }}>
-            Software engineer in Lebanon. Started the meetup after one too many "we should all get
-            together sometime" conversations.
-          </p>
         </Card>
 
         <Card>
-          <h3 className="card-title" style={{ marginBottom: 8, letterSpacing: '-0.01em' }}>
-            Get involved
-          </h3>
-          <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55 }}>
+          <Kicker muted>Get involved</Kicker>
+          <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55, marginTop: 16 }}>
             A few ways in: come to a meetup, give a five-minute talk, or help line up a venue.
             First-time speakers are the whole point — you don't need to be an expert.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
-            <Button variant="text" href="#/events">
+            <Button variant="text" href="/events">
               → See upcoming events
             </Button>
-            <Button variant="text" href="#/about">
+            <Button variant="text" href="/about">
               → Pitch a talk
             </Button>
-            <Button variant="text" href="#/code-of-conduct">
+            <Button variant="text" href="/code-of-conduct">
               → Read the code of conduct
             </Button>
           </div>

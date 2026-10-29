@@ -13,7 +13,7 @@ interface EventRowProps {
  * event's ISO date so callers never hand-format weekdays. Past events show
  * attendee count in place of the time.
  */
-export function EventRow({ event, href = '#/events', past = false }: EventRowProps) {
+export function EventRow({ event, href = '/events', past = false }: EventRowProps) {
   const { rowDay } = eventDateParts(event.date);
   return (
     <EventCard

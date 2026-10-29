@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  push:
+    branches: [production]
+  # The events service fires this (event type `events-updated`) when events
+  # change, so the pre-rendered /events snapshot + Event JSON-LD stay fresh
+  # between code pushes. See docs/deploy.md ("Events auto-rebuild").
+  repository_dispatch:
+    types: [events-updated]
+
+# Deploy tokens/actions don't need write access to the repo.
+permissions:
+  contents: read
+
+# One production deploy at a time; a newer push cancels an in-flight older run
+# so a stale build can't land on production after a newer one.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      # Baked into the production build (not a committed .env file).
+      VITE_EVENTS_API_URL: https://api.uppervalleytech.org
+    steps:
+      # repository_dispatch runs always check out the default branch (main), so
+      # pin production or an events rebuild would deploy unreleased code.
+      - uses: actions/checkout@v4
+        with:
+          ref: production
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      # Registers as a PRODUCTION deployment only if the Pages project's
+      # production branch is set to `production`. Otherwise this uploads a
+      # preview and the custom domain won't update. See docs/deploy.md.
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=uppervalley-tech --branch=production

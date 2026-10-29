@@ -48,10 +48,10 @@ function Agenda({ items }: { items: AgendaItem[] }) {
 }
 
 export function EventsScreen() {
-  const { events, status } = useEvents();
-  const next = selectNext(events);
-  const upcoming = selectUpcoming(events);
-  const past = selectPast(events);
+  const { events, status, now } = useEvents();
+  const next = selectNext(events, now);
+  const upcoming = selectUpcoming(events, now);
+  const past = selectPast(events, now);
   const nextParts = next ? eventDateParts(next.date) : null;
 
   return (
@@ -112,7 +112,7 @@ export function EventsScreen() {
             <p style={{ color: 'var(--ink-2)', fontSize: 13, marginBottom: 14 }}>
               Five minutes, any topic you're into. First-time speakers especially welcome.
             </p>
-            <Button variant="ghost" href="#/about">
+            <Button variant="ghost" href="/about">
               Pitch a talk →
             </Button>
           </Card>

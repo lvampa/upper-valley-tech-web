@@ -14,8 +14,8 @@ interface FooterProps {
 export function Footer({
   tagline = 'est. 2025 · Upper Valley, NH + VT',
   links = [
-    { label: 'Code of conduct', href: '#/code-of-conduct' },
-    { label: 'Contact', href: '#/about' },
+    { label: 'Code of conduct', href: '/code-of-conduct' },
+    { label: 'Contact', href: '/about' },
   ],
   style,
 }: FooterProps) {

@@ -24,9 +24,9 @@ function SubscribeSection() {
 }
 
 export function HomeScreen() {
-  const { events, status } = useEvents();
-  const next = selectNext(events);
-  const upcoming = selectUpcoming(events).slice(0, 2);
+  const { events, status, now } = useEvents();
+  const next = selectNext(events, now);
+  const upcoming = selectUpcoming(events, now).slice(0, 2);
   const nextParts = next ? eventDateParts(next.date) : null;
 
   return (
@@ -39,7 +39,7 @@ export function HomeScreen() {
           className="text-balance"
           style={{ color: 'var(--ink-2)', fontSize: 18, maxWidth: 500, margin: '18px auto 0' }}
         >
-          Monthly meetup for tech-focused people in the Upper Valley.
+          Monthly tech focused meetup in the Upper Valley.
         </p>
       </section>
 
@@ -53,7 +53,7 @@ export function HomeScreen() {
         <section style={{ maxWidth: 520, margin: '52px auto 0' }}>
           <SectionLabel
             action={
-              <Button variant="text" href="#/events">
+              <Button variant="text" href="/events">
                 See all events →
               </Button>
             }

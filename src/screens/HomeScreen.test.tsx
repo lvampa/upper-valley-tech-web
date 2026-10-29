@@ -30,19 +30,19 @@ beforeEach(() => {
 
 describe('HomeScreen', () => {
   it('given loading, shows the loading affordance', () => {
-    mockUseEvents.mockReturnValue({ events: [], status: 'loading' });
+    mockUseEvents.mockReturnValue({ events: [], status: 'loading', now: new Date() });
     render(<HomeScreen />);
     expect(screen.getByText('Loading events…')).toBeInTheDocument();
   });
 
   it('given an error, shows the error line', () => {
-    mockUseEvents.mockReturnValue({ events: [], status: 'error' });
+    mockUseEvents.mockReturnValue({ events: [], status: 'error', now: new Date() });
     render(<HomeScreen />);
     expect(screen.getByText(/Couldn't load events/)).toBeInTheDocument();
   });
 
   it('given events, shows the next meetup', () => {
-    mockUseEvents.mockReturnValue({ events: [future], status: 'success' });
+    mockUseEvents.mockReturnValue({ events: [future], status: 'success', now: new Date() });
     render(<HomeScreen />);
     expect(screen.getByText('Next meetup')).toBeInTheDocument();
     expect(screen.getByText('Lightning Talks & Pizza')).toBeInTheDocument();
