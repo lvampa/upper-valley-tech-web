@@ -3,16 +3,17 @@ import { serializeInitialData, buildSitemap, renderDocument } from './prerender.
 
 describe('serializeInitialData', () => {
   it('produces an assignable script body', () => {
-    const out = serializeInitialData({ events: [] });
+    const out = serializeInitialData({ events: [], asOf: '2026-07-01T00:00:00.000Z' });
     expect(out).toContain('window.__UVT_DATA__');
   });
 
   it('escapes < so payload data cannot break out of the script tag', () => {
     const hostile = {
       events: [{ id: 'x', date: '2099-01-01', title: '</script>', location: 'L', time: 't' }],
+      asOf: '2026-07-01T00:00:00.000Z',
     };
     const out = serializeInitialData(hostile);
-    // Only the wrapper's own closing tag remains — the payload one is escaped.
+    // Only the wrapper's own closing tag remains; the payload one is escaped.
     expect(out.match(/<\/script>/g)).toHaveLength(1);
     expect(out).toContain('\\u003c/script>');
   });
@@ -40,5 +41,17 @@ describe('renderDocument', () => {
     expect(doc).toContain('<div id="app"><main>hi</main></div>');
     expect(doc).toContain('<title>T</title>');
     expect(doc).toContain('window.__UVT_DATA__');
+  });
+
+  it('inserts $ sequences in content literally', () => {
+    const template = '<html><head></head><body><div id="app"></div></body></html>';
+    const doc = renderDocument({
+      template,
+      appHtml: "<p>Pizza $$ fund $& $' $`</p>",
+      headHtml: '<title>$$</title>',
+      dataScript: '',
+    });
+    expect(doc).toContain("<p>Pizza $$ fund $& $' $`</p>");
+    expect(doc).toContain('<title>$$</title>');
   });
 });

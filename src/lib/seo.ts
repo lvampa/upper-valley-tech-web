@@ -1,6 +1,6 @@
 // Per-route SEO: titles, meta, canonical, Open Graph/Twitter, and JSON-LD.
 // Consumed at build time (renderHeadTags → injected into static HTML) and on
-// the client (syncClientHead → keeps <title> correct after hydration).
+// the client (syncClientHead → sets <title> on load, for dev and cold renders).
 import type { Event } from './types.ts';
 import {
   SITE_URL,
@@ -27,27 +27,27 @@ export const SITE_ROUTES = ['/', '/events', '/about', '/code-of-conduct'];
 
 const META: Record<string, { title: string; description: string; robots?: string }> = {
   '/': {
-    title: 'Upper Valley Tech — Monthly Tech Meetup in NH & VT',
+    title: 'Upper Valley Tech - Monthly Tech Meetup in NH & VT',
     description:
       'Upper Valley Tech is a community-driven monthly meetup connecting developers, founders, and technology professionals across the Upper Valley of New Hampshire and Vermont. Founded 2025.',
   },
   '/events': {
-    title: 'Events — Upper Valley Tech',
+    title: 'Events - Upper Valley Tech',
     description:
       'Upcoming and past Upper Valley Tech meetups: dates, locations, and agendas for developers, founders, and tech professionals in the NH & VT Upper Valley.',
   },
   '/about': {
-    title: 'About — Upper Valley Tech',
+    title: 'About - Upper Valley Tech',
     description:
       'About Upper Valley Tech: a community organization founded in 2025 by Connor Abdelnoor to build and support the tech community across the Upper Valley of New Hampshire and Vermont.',
   },
   '/code-of-conduct': {
-    title: 'Code of Conduct — Upper Valley Tech',
+    title: 'Code of Conduct - Upper Valley Tech',
     description:
       'The Upper Valley Tech code of conduct: our standards for a respectful, inclusive community at every meetup and event.',
   },
   '/404': {
-    title: 'Page Not Found — Upper Valley Tech',
+    title: 'Page Not Found - Upper Valley Tech',
     description: 'The page you were looking for could not be found.',
     robots: 'noindex, follow',
   },
@@ -81,7 +81,7 @@ const organizationLd = () => ({
   foundingDate: FOUNDING_YEAR,
   founder: { '@type': 'Person', name: FOUNDER },
   areaServed: { '@type': 'Place', name: 'Upper Valley, New Hampshire and Vermont' },
-  description: `${SITE_NAME} — ${SITE_TAGLINE}. A community organization for ${REGION_PHRASE}.`,
+  description: `${SITE_NAME} - ${SITE_TAGLINE}. A community organization for ${REGION_PHRASE}.`,
 });
 
 const eventLd = (e: Event) => ({
@@ -171,7 +171,7 @@ export function renderHeadTags(pathname: string, events: Event[]): string {
     meta('property', 'og:image:width', String(OG_IMAGE_WIDTH)),
     meta('property', 'og:image:height', String(OG_IMAGE_HEIGHT)),
     meta('property', 'og:image:type', 'image/png'),
-    meta('property', 'og:image:alt', `${SITE_NAME} — ${SITE_TAGLINE}`),
+    meta('property', 'og:image:alt', `${SITE_NAME} - ${SITE_TAGLINE}`),
     meta('name', 'twitter:card', 'summary_large_image'),
     meta('name', 'twitter:title', m.title),
     meta('name', 'twitter:description', m.description),
@@ -181,7 +181,7 @@ export function renderHeadTags(pathname: string, events: Event[]): string {
   return lines.join('\n');
 }
 
-/** Client-side: keep the document title correct after hydration/History nav. */
+/** Client-side: set the document title for pages that were not prerendered. */
 export function syncClientHead(pathname: string): void {
   if (typeof document === 'undefined') return;
   document.title = getRouteMeta(pathname).title;

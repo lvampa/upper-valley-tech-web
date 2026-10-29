@@ -17,7 +17,7 @@
 - No new runtime dependencies (only a dev-only `@resvg/resvg-js` for one-shot image generation). Runtime deps stay lean.
 - Never use `as` for type coercion (match existing type-guard style in `src/lib/api.ts`).
 - Events fetched via existing `fetchEvents()` (`src/lib/api.ts`), validated by type guards.
-- Build must not fail if the build-time events fetch fails — degrade to an empty events snapshot and warn.
+- Build must not fail if the build-time events fetch fails - degrade to an empty events snapshot and warn.
 
 ---
 
@@ -25,30 +25,30 @@
 
 **Create:**
 
-- `src/lib/site.ts` — site identity + SEO constants (single source of truth).
-- `src/lib/seo.ts` — per-route metadata, JSON-LD builders, `renderHeadTags()`, client head sync.
-- `src/lib/prerender.ts` — pure helpers: `serializeInitialData`, `buildSitemap`, `renderDocument` (tested in vitest, re-exported to the `.mjs` script).
-- `src/lib/router.tsx` — `resolveRoute(pathname)` → `{ Screen, active, status }`, path list, 404 fallback.
-- `src/lib/EventsDataContext.tsx` — context carrying the SSR/hydration events seed.
-- `src/screens/NotFoundScreen.tsx` — 404 screen.
-- `src/entry-server.tsx` — SSR `render(pathname, data)` + re-exports (`SITE_ROUTES`, prerender helpers).
-- `scripts/prerender.mjs` — build-time orchestrator (fetch → render routes → write files + sitemap).
-- `scripts/gen-og-image.mjs` — one-shot OG PNG generator.
-- `public/robots.txt` — crawl directives + sitemap pointer.
-- `public/og-image.png` — generated, committed.
+- `src/lib/site.ts` - site identity + SEO constants (single source of truth).
+- `src/lib/seo.ts` - per-route metadata, JSON-LD builders, `renderHeadTags()`, client head sync.
+- `src/lib/prerender.ts` - pure helpers: `serializeInitialData`, `buildSitemap`, `renderDocument` (tested in vitest, re-exported to the `.mjs` script).
+- `src/lib/router.tsx` - `resolveRoute(pathname)` → `{ Screen, active, status }`, path list, 404 fallback.
+- `src/lib/EventsDataContext.tsx` - context carrying the SSR/hydration events seed.
+- `src/screens/NotFoundScreen.tsx` - 404 screen.
+- `src/entry-server.tsx` - SSR `render(pathname, data)` + re-exports (`SITE_ROUTES`, prerender helpers).
+- `scripts/prerender.mjs` - build-time orchestrator (fetch → render routes → write files + sitemap).
+- `scripts/gen-og-image.mjs` - one-shot OG PNG generator.
+- `public/robots.txt` - crawl directives + sitemap pointer.
+- `public/og-image.png` - generated, committed.
 
 **Modify:**
 
-- `src/App.tsx` — path-based screen resolution via `router.tsx`; provide `EventsDataContext`; drop hash logic.
-- `src/main.tsx` — read `window.__UVT_DATA__`; `hydrateRoot` in prod / `createRoot` in dev.
-- `src/lib/useEvents.ts` — seed initial state from `EventsDataContext`.
-- `src/components/navigation/Nav.tsx`, `Footer.tsx` — real-path hrefs + `active` keys.
-- `src/screens/HomeScreen.tsx` — `href="#/events"` → `/events`.
-- `public/metadata.html` — reduce to page-agnostic head; remove cargo-cult `ai:*`/crawler tags + per-page title/description.
-- `package.json` — `build` script pipeline; add `@resvg/resvg-js` devDependency + `gen:og` script.
-- `.github/workflows/deploy.yml` — add `repository_dispatch: [events-updated]` trigger.
-- `docs/deploy.md` — document the rebuild webhook contract.
-- `vite.config.ts` — no change expected (SSR build is invoked via CLI flags in `package.json`); confirm the `inject-metadata` plugin still applies to the client build only.
+- `src/App.tsx` - path-based screen resolution via `router.tsx`; provide `EventsDataContext`; drop hash logic.
+- `src/main.tsx` - read `window.__UVT_DATA__`; `hydrateRoot` in prod / `createRoot` in dev.
+- `src/lib/useEvents.ts` - seed initial state from `EventsDataContext`.
+- `src/components/navigation/Nav.tsx`, `Footer.tsx` - real-path hrefs + `active` keys.
+- `src/screens/HomeScreen.tsx` - `href="#/events"` → `/events`.
+- `public/metadata.html` - reduce to page-agnostic head; remove cargo-cult `ai:*`/crawler tags + per-page title/description.
+- `package.json` - `build` script pipeline; add `@resvg/resvg-js` devDependency + `gen:og` script.
+- `.github/workflows/deploy.yml` - add `repository_dispatch: [events-updated]` trigger.
+- `docs/deploy.md` - document the rebuild webhook contract.
+- `vite.config.ts` - no change expected (SSR build is invoked via CLI flags in `package.json`); confirm the `inject-metadata` plugin still applies to the client build only.
 
 ---
 
@@ -69,7 +69,7 @@
 - [ ] **Step 1: Write `src/lib/site.ts`**
 
 ```ts
-// Site identity + SEO constants — the single source of truth for anything that
+// Site identity + SEO constants - the single source of truth for anything that
 // appears in <head>, JSON-LD, robots.txt, or the sitemap.
 import { CONTACT_EMAIL } from './constants.ts';
 
@@ -167,7 +167,7 @@ describe('renderHeadTags', () => {
 - [ ] **Step 3: Run test to verify it fails**
 
 Run: `npx vitest run src/lib/seo.test.ts`
-Expected: FAIL — `Cannot find module './seo.ts'`.
+Expected: FAIL - `Cannot find module './seo.ts'`.
 
 - [ ] **Step 4: Write `src/lib/seo.ts`**
 
@@ -201,27 +201,27 @@ export const SITE_ROUTES = ['/', '/events', '/about', '/code-of-conduct'];
 
 const META: Record<string, { title: string; description: string; robots?: string }> = {
   '/': {
-    title: 'Upper Valley Tech — Monthly Tech Meetup in NH & VT',
+    title: 'Upper Valley Tech - Monthly Tech Meetup in NH & VT',
     description:
       'Upper Valley Tech is a community-driven monthly meetup connecting developers, founders, and technology professionals across the Upper Valley of New Hampshire and Vermont. Founded 2025.',
   },
   '/events': {
-    title: 'Events — Upper Valley Tech',
+    title: 'Events - Upper Valley Tech',
     description:
       'Upcoming and past Upper Valley Tech meetups: dates, locations, and agendas for developers, founders, and tech professionals in the NH & VT Upper Valley.',
   },
   '/about': {
-    title: 'About — Upper Valley Tech',
+    title: 'About - Upper Valley Tech',
     description:
       'About Upper Valley Tech: a community organization founded in 2025 by Connor Abdelnoor to build and support the tech community across the Upper Valley of New Hampshire and Vermont.',
   },
   '/code-of-conduct': {
-    title: 'Code of Conduct — Upper Valley Tech',
+    title: 'Code of Conduct - Upper Valley Tech',
     description:
       'The Upper Valley Tech code of conduct: our standards for a respectful, inclusive community at every meetup and event.',
   },
   '/404': {
-    title: 'Page Not Found — Upper Valley Tech',
+    title: 'Page Not Found - Upper Valley Tech',
     description: 'The page you were looking for could not be found.',
     robots: 'noindex, follow',
   },
@@ -255,7 +255,7 @@ const organizationLd = () => ({
   foundingDate: FOUNDING_YEAR,
   founder: { '@type': 'Person', name: FOUNDER },
   areaServed: { '@type': 'Place', name: 'Upper Valley, New Hampshire and Vermont' },
-  description: `${SITE_NAME} — ${SITE_TAGLINE}. A community organization for ${REGION_PHRASE}.`,
+  description: `${SITE_NAME} - ${SITE_TAGLINE}. A community organization for ${REGION_PHRASE}.`,
 });
 
 const eventLd = (e: Event) => ({
@@ -345,7 +345,7 @@ export function renderHeadTags(pathname: string, events: Event[]): string {
     meta('property', 'og:image:width', String(OG_IMAGE_WIDTH)),
     meta('property', 'og:image:height', String(OG_IMAGE_HEIGHT)),
     meta('property', 'og:image:type', 'image/png'),
-    meta('property', 'og:image:alt', `${SITE_NAME} — ${SITE_TAGLINE}`),
+    meta('property', 'og:image:alt', `${SITE_NAME} - ${SITE_TAGLINE}`),
     meta('name', 'twitter:card', 'summary_large_image'),
     meta('name', 'twitter:title', m.title),
     meta('name', 'twitter:description', m.description),
@@ -419,7 +419,7 @@ describe('resolveRoute', () => {
 - [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run src/lib/router.test.tsx`
-Expected: FAIL — modules not found.
+Expected: FAIL - modules not found.
 
 - [ ] **Step 3: Create `src/screens/NotFoundScreen.tsx`**
 
@@ -507,7 +507,7 @@ export function App({ location, initialEvents = null }: AppProps) {
 }
 ```
 
-> Note: `EventsDataProvider` is created in Task 3. If executing strictly in order, temporarily import nothing and wrap with a fragment; then wire the provider in Task 3. Simplest is to do Task 3's context file first if your executor allows — otherwise stub `EventsDataProvider` as `({ children }) => <>{children}</>` here and replace in Task 3.
+> Note: `EventsDataProvider` is created in Task 3. If executing strictly in order, temporarily import nothing and wrap with a fragment; then wire the provider in Task 3. Simplest is to do Task 3's context file first if your executor allows - otherwise stub `EventsDataProvider` as `({ children }) => <>{children}</>` here and replace in Task 3.
 
 - [ ] **Step 6: Update `src/components/navigation/Nav.tsx` link defaults**
 
@@ -531,7 +531,7 @@ Change the defaults:
   ],
 ```
 
-- [ ] **Step 8: Update `src/screens/HomeScreen.tsx`** — the two `href="#/events"` occurrences (the compact "See all events →" button) become `href="/events"`.
+- [ ] **Step 8: Update `src/screens/HomeScreen.tsx`** - the two `href="#/events"` occurrences (the compact "See all events →" button) become `href="/events"`.
 
 - [ ] **Step 9: Trim `public/metadata.html`** to page-agnostic head only:
 
@@ -541,7 +541,7 @@ Change the defaults:
 <meta name="theme-color" content="#0f0f0f" />
 ```
 
-(Removes the static `<title>`/`description`/canonical/OG/Twitter/`ai:*`/crawler tags and JSON-LD — all now emitted per-route by `renderHeadTags`. The `<link rel="icon">` stays in `index.html`.)
+(Removes the static `<title>`/`description`/canonical/OG/Twitter/`ai:*`/crawler tags and JSON-LD - all now emitted per-route by `renderHeadTags`. The `<link rel="icon">` stays in `index.html`.)
 
 - [ ] **Step 10: Run tests**
 
@@ -626,7 +626,7 @@ it('starts in success with the seeded events when a seed is provided', () => {
 - [ ] **Step 3: Run to verify it fails**
 
 Run: `npx vitest run src/lib/useEvents.test.ts`
-Expected: FAIL — seed not applied (initial events empty / status loading).
+Expected: FAIL - seed not applied (initial events empty / status loading).
 
 - [ ] **Step 4: Modify `src/lib/useEvents.ts`** to seed initial state
 
@@ -674,9 +674,9 @@ export function useEvents(): UseEventsResult {
 }
 ```
 
-> Note the import extension: `EventsDataContext.tsx` is imported as `./EventsDataContext.ts` per the project's TS extension convention (verify against how other `.tsx` modules are imported; match the existing style — several imports in the repo use `.tsx`). Use whichever resolves under the project's `tsconfig`/vite alias setup; adjust to `./EventsDataContext.tsx` if `.ts` fails to resolve.
+> Note the import extension: `EventsDataContext.tsx` is imported as `./EventsDataContext.ts` per the project's TS extension convention (verify against how other `.tsx` modules are imported; match the existing style - several imports in the repo use `.tsx`). Use whichever resolves under the project's `tsconfig`/vite alias setup; adjust to `./EventsDataContext.tsx` if `.ts` fails to resolve.
 
-- [ ] **Step 5: Update `src/App.tsx`** to use the real provider (replace any stub from Task 2 — import `EventsDataProvider` from `@lib/EventsDataContext.tsx`, already shown in Task 2 Step 5).
+- [ ] **Step 5: Update `src/App.tsx`** to use the real provider (replace any stub from Task 2 - import `EventsDataProvider` from `@lib/EventsDataContext.tsx`, already shown in Task 2 Step 5).
 
 - [ ] **Step 6: Update `src/main.tsx`** for hydration + seed read
 
@@ -782,7 +782,7 @@ describe('renderDocument', () => {
 - [ ] **Step 2: Run to verify it fails**
 
 Run: `npx vitest run src/lib/prerender.test.ts`
-Expected: FAIL — module not found.
+Expected: FAIL - module not found.
 
 - [ ] **Step 3: Write `src/lib/prerender.ts`**
 
@@ -817,7 +817,7 @@ export function renderDocument(opts: {
 }
 ```
 
-Note `SITE_URL` import is intentional even if only `absoluteUrl` is used directly — remove the unused import if the linter flags it. (If lint fails on unused `SITE_URL`, delete it from the import.)
+Note `SITE_URL` import is intentional even if only `absoluteUrl` is used directly - remove the unused import if the linter flags it. (If lint fails on unused `SITE_URL`, delete it from the import.)
 
 - [ ] **Step 4: Write `src/entry-server.tsx`**
 
@@ -881,7 +881,7 @@ describe('render', () => {
 - [ ] **Step 6: Run tests**
 
 Run: `npx vitest run src/lib/prerender.test.ts src/entry-server.test.tsx`
-Expected: PASS. (If `render('/events')` throws because a hook touches `window` during render, guard that hook with `typeof window` — note the failure and fix minimally.)
+Expected: PASS. (If `render('/events')` throws because a hook touches `window` during render, guard that hook with `typeof window` - note the failure and fix minimally.)
 
 - [ ] **Step 7: Commit**
 
@@ -898,7 +898,7 @@ git commit -m "feat(ssr): server render entry + prerender helpers"
 
 - Create: `scripts/prerender.mjs`, `public/robots.txt`
 - Modify: `package.json`
-- Test: manual build verification (no unit test — the pure logic is covered in Tasks 1/4).
+- Test: manual build verification (no unit test - the pure logic is covered in Tasks 1/4).
 
 **Interfaces:**
 
@@ -907,7 +907,7 @@ git commit -m "feat(ssr): server render entry + prerender helpers"
 - [ ] **Step 1: Create `public/robots.txt`**
 
 ```
-# Upper Valley Tech — crawling is welcome, including AI crawlers.
+# Upper Valley Tech - crawling is welcome, including AI crawlers.
 User-agent: *
 Allow: /
 
@@ -998,7 +998,7 @@ for (const route of SITE_ROUTES) {
   );
 }
 
-// Sitemap — build date from the Node runtime clock (ISO date only).
+// Sitemap - build date from the Node runtime clock (ISO date only).
 const lastmod = new Date().toISOString().slice(0, 10);
 await writeFile(path.join(dist, 'sitemap.xml'), buildSitemap(SITE_ROUTES, lastmod), 'utf-8');
 console.log('[prerender] wrote sitemap.xml');
@@ -1035,7 +1035,7 @@ Run:
 
 ```bash
 npm run preview
-# Open the printed URL, view source on /events — confirm event titles are in the
+# Open the printed URL, view source on /events - confirm event titles are in the
 # raw HTML (not just after JS). Confirm no hydration error in the console.
 ```
 
@@ -1090,7 +1090,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
     <path d="M22 92 L46 44 L70 72 L94 30 L118 92" fill="none" stroke="#141414" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" transform="translate(-8,-8) scale(1.05)"/>
   </g>
   <text x="120" y="430" font-family="Georgia, serif" font-size="72" font-weight="700" fill="#f4f1ec">Upper Valley Tech</text>
-  <text x="120" y="490" font-family="Georgia, serif" font-size="32" fill="#b8b3ab">Monthly tech meetup — New Hampshire &amp; Vermont</text>
+  <text x="120" y="490" font-family="Georgia, serif" font-size="32" fill="#b8b3ab">Monthly tech meetup - New Hampshire &amp; Vermont</text>
 </svg>`;
 
 const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
@@ -1149,7 +1149,7 @@ on:
     types: [events-updated]
 ```
 
-No other job changes are needed — the build already fetches live events at build time, so a dispatch-triggered run redeploys a fresh snapshot.
+No other job changes are needed - the build already fetches live events at build time, so a dispatch-triggered run redeploys a fresh snapshot.
 
 - [ ] **Step 2: Document the contract in `docs/deploy.md`** (append a section)
 

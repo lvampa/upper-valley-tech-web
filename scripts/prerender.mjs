@@ -1,6 +1,8 @@
 // Post-build static prerender. Runs after the client + SSR Vite builds.
 // Reads the client template (dist/index.html), fetches events once, renders
-// every route to a real dist/<route>/index.html, and writes sitemap.xml.
+// every route to dist/<route>.html, and writes sitemap.xml. Cloudflare Pages
+// serves <route>.html at /<route>, matching the canonical URLs; a
+// <route>/index.html would be served at /<route>/ behind a redirect.
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -9,31 +11,29 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = path.join(root, 'dist');
 
 const server = await import(path.join(dist, 'server', 'entry-server.js'));
-const { render, SITE_ROUTES, serializeInitialData, buildSitemap, renderDocument } = server;
+const { render, fetchEvents, SITE_ROUTES, serializeInitialData, buildSitemap, renderDocument } =
+  server;
 
+// Null, not [], on failure: an empty list would read as "no events" and hide
+// the client's error state if its live fetch fails too.
 async function loadEvents() {
-  const base = process.env.VITE_EVENTS_API_URL;
   try {
-    const res = await fetch(`${base}/events`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const body = await res.json();
-    if (!body || !Array.isArray(body.events)) throw new Error('bad shape');
-    return body.events;
+    return await fetchEvents();
   } catch (err) {
-    console.warn(`[prerender] events fetch failed (${String(err)}); baking empty snapshot`);
-    return [];
+    console.warn(`[prerender] events fetch failed (${String(err)}); baking no snapshot`);
+    return null;
   }
 }
 
 function outPath(route) {
   return route === '/'
     ? path.join(dist, 'index.html')
-    : path.join(dist, route.replace(/^\//, ''), 'index.html');
+    : path.join(dist, `${route.replace(/^\//, '')}.html`);
 }
 
 const template = await readFile(path.join(dist, 'index.html'), 'utf-8');
-const events = await loadEvents();
-const data = { events };
+const builtAt = new Date();
+const data = { events: await loadEvents(), asOf: builtAt.toISOString() };
 const dataScript = serializeInitialData(data);
 
 for (const route of SITE_ROUTES) {
@@ -56,8 +56,8 @@ for (const route of SITE_ROUTES) {
   console.log('[prerender] wrote 404.html');
 }
 
-// Sitemap — build date from the Node runtime clock (ISO date only).
-const lastmod = new Date().toISOString().slice(0, 10);
+// Sitemap lastmod is the build date (ISO date only).
+const lastmod = builtAt.toISOString().slice(0, 10);
 await writeFile(path.join(dist, 'sitemap.xml'), buildSitemap(SITE_ROUTES, lastmod), 'utf-8');
 console.log('[prerender] wrote sitemap.xml');
 

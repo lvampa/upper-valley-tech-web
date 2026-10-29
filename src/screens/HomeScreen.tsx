@@ -24,9 +24,9 @@ function SubscribeSection() {
 }
 
 export function HomeScreen() {
-  const { events, status } = useEvents();
-  const next = selectNext(events);
-  const upcoming = selectUpcoming(events).slice(0, 2);
+  const { events, status, now } = useEvents();
+  const next = selectNext(events, now);
+  const upcoming = selectUpcoming(events, now).slice(0, 2);
   const nextParts = next ? eventDateParts(next.date) : null;
 
   return (

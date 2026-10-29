@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolveRoute } from './router.tsx';
+import { resolveRoute, legacyHashPath } from './router.tsx';
 import { HomeScreen } from '@screens/HomeScreen.tsx';
 import { EventsScreen } from '@screens/EventsScreen.tsx';
 import { NotFoundScreen } from '@screens/NotFoundScreen.tsx';
@@ -18,5 +18,17 @@ describe('resolveRoute', () => {
 
   it('falls back to NotFoundScreen for unknown paths', () => {
     expect(resolveRoute('/nope').Screen).toBe(NotFoundScreen);
+  });
+});
+
+describe('legacyHashPath', () => {
+  it('maps an old #/ URL to its real path', () => {
+    expect(legacyHashPath('#/events')).toBe('/events');
+    expect(legacyHashPath('#/code-of-conduct')).toBe('/code-of-conduct');
+  });
+
+  it('ignores in-page anchors and empty hashes', () => {
+    expect(legacyHashPath('#subscribe')).toBeNull();
+    expect(legacyHashPath('')).toBeNull();
   });
 });

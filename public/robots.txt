@@ -1,4 +1,4 @@
-# Upper Valley Tech — crawling is welcome, including AI crawlers.
+# Upper Valley Tech - crawling is welcome, including AI crawlers.
 User-agent: *
 Allow: /
 

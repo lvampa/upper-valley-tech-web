@@ -26,7 +26,11 @@ jobs:
       # Baked into the production build (not a committed .env file).
       VITE_EVENTS_API_URL: https://api.uppervalleytech.org
     steps:
+      # repository_dispatch runs always check out the default branch (main), so
+      # pin production or an events rebuild would deploy unreleased code.
       - uses: actions/checkout@v4
+        with:
+          ref: production
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -34,7 +38,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       # Registers as a PRODUCTION deployment only if the Pages project's
-      # production branch is set to `production` — otherwise this uploads a
+      # production branch is set to `production`. Otherwise this uploads a
       # preview and the custom domain won't update. See docs/deploy.md.
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

@@ -12,22 +12,23 @@ export function eventDateParts(date: string) {
   };
 }
 
-function isPast(date: string) {
-  return new Date(`${date}T23:59:59`) < new Date();
+function isPast(date: string, now: Date) {
+  return new Date(`${date}T23:59:59`) < now;
 }
 
 // Pure selectors over an events array fetched at runtime. The list itself now
-// lives server-side; these just slice it for the UI.
+// lives server-side; these just slice it for the UI. `now` is passed in so the
+// prerendered markup and the hydrating client agree on what is past.
 
-export function selectNext(events: Event[]): Event | undefined {
-  return events.find((e) => !isPast(e.date));
+export function selectNext(events: Event[], now: Date): Event | undefined {
+  return events.find((e) => !isPast(e.date, now));
 }
 
-export function selectUpcoming(events: Event[]): Event[] {
-  const next = selectNext(events);
-  return events.filter((e) => !isPast(e.date) && e.id !== next?.id);
+export function selectUpcoming(events: Event[], now: Date): Event[] {
+  const next = selectNext(events, now);
+  return events.filter((e) => !isPast(e.date, now) && e.id !== next?.id);
 }
 
-export function selectPast(events: Event[]): Event[] {
-  return events.filter((e) => isPast(e.date)).reverse();
+export function selectPast(events: Event[], now: Date): Event[] {
+  return events.filter((e) => isPast(e.date, now)).reverse();
 }

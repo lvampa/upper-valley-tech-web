@@ -21,3 +21,13 @@ export interface Event {
   agenda?: AgendaItem[];
   attendees?: string; // past events only, e.g. "12 here"
 }
+
+/**
+ * The build-time events data baked into each prerendered page. `events` is null
+ * when the build could not fetch them. `asOf` is the build time, used as "now"
+ * until hydration so past/upcoming matches the server markup.
+ */
+export interface EventsSnapshot {
+  events: Event[] | null;
+  asOf: string;
+}

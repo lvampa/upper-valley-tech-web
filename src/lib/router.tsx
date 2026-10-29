@@ -21,3 +21,11 @@ const ROUTES: Record<string, Route> = {
 export function resolveRoute(pathname: string): Route {
   return ROUTES[normalizePath(pathname)] ?? { Screen: NotFoundScreen };
 }
+
+/**
+ * The real path for a pre-prerendering hash URL such as `#/events`, or null when
+ * the hash is not one. Old links and bookmarks still use that form.
+ */
+export function legacyHashPath(hash: string): string | null {
+  return hash.startsWith('#/') ? hash.slice(1) : null;
+}

@@ -1,4 +1,4 @@
-// Site identity + SEO constants — the single source of truth for anything that
+// Site identity + SEO constants: the single source of truth for anything that
 // appears in <head>, JSON-LD, robots.txt, or the sitemap.
 import { CONTACT_EMAIL } from './constants.ts';
 

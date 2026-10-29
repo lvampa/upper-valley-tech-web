@@ -24,37 +24,34 @@ time, not read from a file:
 
 ## Hosting
 
-The site is a static SPA on **Cloudflare Pages** (a Direct-Upload project named
-`uppervalley-tech`). It is **not** git-integrated — Cloudflare has no access to
-the GitHub repo. Instead, deploys run from GitHub Actions using a scoped
-Cloudflare API token, so the trust flows one way (GitHub → Cloudflare).
+The site is a static SPA on **Cloudflare Pages** (a Direct-Upload project named `uppervalley-tech`).
+It is **not** git-integrated, so Cloudflare has no access to the GitHub repo.
+Deploys run from GitHub Actions with a scoped Cloudflare API token instead, so trust flows one way (GitHub → Cloudflare).
 
 ### Automated deploy (CI)
 
 Two workflows:
 
-- **`.github/workflows/ci.yml`** — runs on every PR: format / lint / typecheck /
-  test.
-- **`.github/workflows/deploy.yml`** — runs on push to **`production`**: builds
-  and deploys:
+- **`.github/workflows/ci.yml`** runs on every PR: format, lint, typecheck, and test.
+- **`.github/workflows/deploy.yml`** runs on push to **`production`**.
+  It builds and deploys:
 
   ```
   wrangler pages deploy dist --project-name=uppervalley-tech --branch=production
   ```
 
-Gating is via branch protection (below): PRs must pass `checks` before merging
-to `production`, so only vetted code reaches the deploy workflow.
+Gating is via branch protection (below).
+PRs must pass `checks` before merging to `production`, so only vetted code reaches the deploy workflow.
 
 **Required GitHub repo secrets** (Settings → Secrets and variables → Actions):
 
-- `CLOUDFLARE_API_TOKEN` — a custom token scoped to **Account · Cloudflare Pages
-  · Edit**, restricted to your account. Nothing broader.
-- `CLOUDFLARE_ACCOUNT_ID` — from Workers & Pages → account overview.
+- `CLOUDFLARE_API_TOKEN`: a custom token scoped to **Account · Cloudflare Pages · Edit**, restricted to your account.
+  Nothing broader.
+- `CLOUDFLARE_ACCOUNT_ID`: from Workers & Pages → account overview.
 
-Also set the Pages project's **production branch to `production`** so
-`--branch=production` deploys register as production (the custom domain serves
-the latest production deployment). Recommended: branch-protect `production` to
-require the `checks` job before merge.
+Also set the Pages project's **production branch to `production`** so `--branch=production` deploys register as production.
+The custom domain serves the latest production deployment.
+Recommended: branch-protect `production` to require the `checks` job before merge.
 
 ### Manual deploy (from local)
 
@@ -62,30 +59,27 @@ require the `checks` job before merge.
 ./scripts/deploy.sh   # npm run build + wrangler pages deploy dist
 ```
 
-This uses your `wrangler login` session — **no API token / secrets needed
-locally**. The secrets above are only for CI.
+This uses your `wrangler login` session, so **no API token or secrets are needed locally**.
+The secrets above are only for CI.
 
 ### Custom domain
 
-Add **`uppervalleytech.org`** in the Pages project → Custom domains. Since the
-zone is on Cloudflare, it auto-creates the DNS record and TLS cert (SSL is
-automatic); this repoints the apex to Pages.
+Add **`uppervalleytech.org`** in the Pages project → Custom domains.
+Since the zone is on Cloudflare, it auto-creates the DNS record and TLS cert (SSL is automatic).
+This repoints the apex to Pages.
 
 ## Events API
 
-The events API (read endpoint + organizer MCP) is a separate service —
-[`upper-valley-tech-events-mcp`](https://github.com/lvampa/upper-valley-tech-events-mcp) — with its
-own deploy checklist.
+The events API (read endpoint + organizer MCP) is a separate service, [`upper-valley-tech-events-mcp`](https://github.com/lvampa/upper-valley-tech-events-mcp), with its own deploy checklist.
 
 ## Events auto-rebuild
 
-The site is pre-rendered: at build time `scripts/prerender.mjs` fetches the
-events list and bakes it into `dist/events/index.html` (plus `Event` JSON-LD) so
-search engines and non-JS AI crawlers see real event content. That snapshot is
-only as fresh as the last build.
+The site is pre-rendered.
+At build time `scripts/prerender.mjs` fetches the events list and bakes it into each page (plus `Event` JSON-LD on `dist/events.html`), so search engines and non-JS AI crawlers see real event content.
+That snapshot is only as fresh as the last build.
+If the fetch fails, the build still succeeds and bakes no snapshot; the pages then load events in the browser as usual.
 
-To refresh it when events change, the events service triggers a rebuild via a
-GitHub **`repository_dispatch`** event:
+To refresh it when events change, the events service triggers a rebuild via a GitHub **`repository_dispatch`** event:
 
 ```
 POST https://api.github.com/repos/<owner>/<repo>/dispatches
@@ -96,13 +90,11 @@ Content-Type: application/json
 { "event_type": "events-updated" }
 ```
 
-- `<token>` — a fine-grained PAT scoped to this repo with **Contents: write**
-  (the permission the dispatch endpoint requires), or a classic PAT with the
-  `repo` scope. Store it as a secret in the events service, never in this repo.
-- This fires `.github/workflows/deploy.yml` (its `repository_dispatch:
-events-updated` trigger), which runs the same build + Cloudflare Pages deploy
-  as a push to `production`, re-baking the snapshot.
-- The **sender** lives in the separate `upper-valley-tech-events-mcp` service
-  and is out of scope for this repo — this section documents the contract only.
-- Browsers still get live data regardless: the client re-fetches events on load
-  and replaces the baked snapshot. The rebuild only matters for crawlers.
+- `<token>` is a fine-grained PAT scoped to this repo with **Contents: write** (the permission the dispatch endpoint requires), or a classic PAT with the `repo` scope.
+  Store it as a secret in the events service, never in this repo.
+- This fires the `repository_dispatch: events-updated` trigger in `.github/workflows/deploy.yml`.
+  It checks out `production` and runs the same build and Cloudflare Pages deploy as a push to `production`, re-baking the snapshot.
+- The **sender** lives in the separate `upper-valley-tech-events-mcp` service and is out of scope for this repo.
+  This section documents the contract only.
+- Browsers still get live data regardless.
+  The client re-fetches events on load and replaces the baked snapshot, so the rebuild only matters for crawlers.

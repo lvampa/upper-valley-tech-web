@@ -48,10 +48,10 @@ function Agenda({ items }: { items: AgendaItem[] }) {
 }
 
 export function EventsScreen() {
-  const { events, status } = useEvents();
-  const next = selectNext(events);
-  const upcoming = selectUpcoming(events);
-  const past = selectPast(events);
+  const { events, status, now } = useEvents();
+  const next = selectNext(events, now);
+  const upcoming = selectUpcoming(events, now);
+  const past = selectPast(events, now);
   const nextParts = next ? eventDateParts(next.date) : null;
 
   return (

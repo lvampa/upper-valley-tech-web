@@ -27,7 +27,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
     </g>
   </g>
   <text x="112" y="440" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="700" fill="#f4f1ec" letter-spacing="-1.5">Upper Valley Tech</text>
-  <text x="114" y="500" font-family="Georgia, 'Times New Roman', serif" font-size="31" fill="#b8b3ab">Monthly tech meetup — New Hampshire &amp; Vermont</text>
+  <text x="114" y="500" font-family="Georgia, 'Times New Roman', serif" font-size="31" fill="#b8b3ab">Monthly tech meetup - New Hampshire &amp; Vermont</text>
 </svg>`;
 
 const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
