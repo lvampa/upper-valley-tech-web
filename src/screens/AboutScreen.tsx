@@ -16,7 +16,7 @@ export function AboutScreen() {
           kicker="About"
           title={
             <>
-              What this is
+              What
               <Period />
             </>
           }
