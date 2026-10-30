@@ -83,6 +83,14 @@ describe('fetching events', () => {
       );
       await expect(fetchEvents()).rejects.toThrow('did not match the expected shape');
     });
+    it('names the offending field in the error', async () => {
+      const untitled = { ...goodEvent, title: undefined };
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(() => Promise.resolve(jsonResponse({ events: [untitled] }))),
+      );
+      await expect(fetchEvents()).rejects.toThrow(/events\[0\]\.title/);
+    });
     it('throws when the top-level events key is absent', async () => {
       vi.stubGlobal(
         'fetch',
