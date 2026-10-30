@@ -4,22 +4,24 @@ import { type Event } from '@lib/types.ts';
 
 interface EventRowProps {
   event: Event;
-  href?: string;
   past?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 /**
- * A single event rendered as a row — derives its display date from the
- * event's ISO date so callers never hand-format weekdays. Past events show
- * attendee count in place of the time.
+ * A single event rendered as a row. Derives its display date from the event's
+ * ISO date so callers never hand-format weekdays. Past events show attendee
+ * count in place of the time. With onSelect, the row is a button.
  */
-export function EventRow({ event, href = '/events', past = false }: EventRowProps) {
+export function EventRow({ event, past = false, selected, onSelect }: EventRowProps) {
   const { rowDay } = eventDateParts(event.date);
   return (
     <EventCard
       variant="row"
       past={past}
-      href={href}
+      selected={selected}
+      onSelect={onSelect}
       day={rowDay}
       title={event.title}
       location={event.location}

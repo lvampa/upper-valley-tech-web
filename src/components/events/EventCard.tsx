@@ -22,17 +22,6 @@ const Icon = {
       <path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   ),
-  arrow: (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M5 12h14M13 6l6 6-6 6"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
 };
 
 interface EventCardProps {
@@ -45,7 +34,9 @@ interface EventCardProps {
   time?: string;
   kicker?: string;
   meta?: string[];
-  href?: string;
+  /** Row variant: makes the row a button that selects this event. */
+  onSelect?: () => void;
+  selected?: boolean;
   past?: boolean;
   rsvpHref?: string;
   rsvpLabel?: string;
@@ -63,7 +54,8 @@ export function EventCard({
   time,
   kicker,
   meta = [],
-  href,
+  onSelect,
+  selected = false,
   past = false,
   rsvpHref,
   rsvpLabel,
@@ -84,28 +76,19 @@ export function EventCard({
     // Past rows step down one ink level rather than fading with opacity, which
     // pushed the muted text below WCAG AA contrast.
     const primaryInk = past ? 'var(--ink-2)' : 'var(--ink)';
-    return (
-      <a
-        href={past ? undefined : href}
-        onMouseEnter={() => {
-          setHover(true);
-        }}
-        onMouseLeave={() => {
-          setHover(false);
-        }}
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '96px 1fr 90px 24px',
-          gap: 18,
-          alignItems: 'center',
-          padding: '16px 4px',
-          borderTop: '1px solid var(--line)',
-          color: 'var(--ink-2)',
-          fontSize: 14,
-          textDecoration: 'none',
-          ...style,
-        }}
-      >
+    const rowStyle: CSSProperties = {
+      display: 'grid',
+      gridTemplateColumns: '96px 1fr 90px',
+      gap: 18,
+      alignItems: 'center',
+      padding: '16px 4px',
+      borderTop: '1px solid var(--line)',
+      color: 'var(--ink-2)',
+      fontSize: 14,
+      ...style,
+    };
+    const cells = (
+      <>
         <div style={{ fontFamily: 'var(--font-mono)', color: primaryInk, fontSize: 13 }}>{day}</div>
         <div>
           <div style={{ color: primaryInk, fontFamily: 'var(--font-display)', fontWeight: 500 }}>
@@ -118,17 +101,38 @@ export function EventCard({
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--ink-3)' }}>
           {time}
         </div>
-        <div
-          style={{
-            color: hover && !past ? 'var(--coral)' : 'var(--ink-3)',
-            textAlign: 'right',
-            transform: hover && !past ? 'translateX(3px)' : 'none',
-            transition: 'transform var(--dur-base) var(--ease), color var(--dur-base) var(--ease)',
-          }}
-        >
-          {past ? null : Icon.arrow}
-        </div>
-      </a>
+      </>
+    );
+
+    if (!onSelect) return <div style={rowStyle}>{cells}</div>;
+
+    // Shading stays at or below 6% so the muted text keeps 4.5:1 contrast.
+    const shade = selected ? 0.06 : hover ? 0.04 : 0;
+    return (
+      <button
+        type="button"
+        aria-pressed={selected}
+        onClick={onSelect}
+        onMouseEnter={() => {
+          setHover(true);
+        }}
+        onMouseLeave={() => {
+          setHover(false);
+        }}
+        style={{
+          ...rowStyle,
+          width: '100%',
+          border: 'none',
+          borderTop: rowStyle.borderTop,
+          background: shade ? `rgba(244, 241, 236, ${String(shade)})` : 'transparent',
+          font: 'inherit',
+          textAlign: 'left',
+          cursor: 'pointer',
+          transition: 'background var(--dur-base) var(--ease)',
+        }}
+      >
+        {cells}
+      </button>
     );
   }
 

@@ -1,11 +1,13 @@
+import { useEffect, useRef, useState } from 'react';
 import { EventCard } from '@components/events/EventCard.tsx';
 import { EventRow } from '@components/events/EventRow.tsx';
 import { EventsStatus } from '@components/events/EventsStatus.tsx';
 import { Kicker } from '@components/core/Kicker.tsx';
+import { Button } from '@components/core/Button.tsx';
 import { PageHeading, Period } from '@components/core/PageHeading.tsx';
 import { selectNext, selectUpcoming, selectPast, eventDateParts } from '@data/events.ts';
 import { useEvents } from '@lib/useEvents.ts';
-import { type AgendaItem } from '@lib/types.ts';
+import { type AgendaItem, type Event } from '@lib/types.ts';
 
 function Agenda({ items }: { items: AgendaItem[] }) {
   return (
@@ -45,12 +47,79 @@ function Agenda({ items }: { items: AgendaItem[] }) {
   );
 }
 
+type FeaturedKind = 'next' | 'upcoming' | 'past';
+
+function FeaturedEvent({
+  event,
+  kind,
+  onBackToNext,
+}: {
+  event: Event;
+  kind: FeaturedKind;
+  onBackToNext?: () => void;
+}) {
+  const parts = eventDateParts(event.date);
+  const date = `${parts.weekday} ${parts.month} ${parts.day}`;
+  const kickers: Record<FeaturedKind, string> = {
+    next: `Next meetup · ${date}`,
+    upcoming: date,
+    past: `Past · ${date}`,
+  };
+  const attendees = event.attendees ? [event.attendees] : [];
+
+  return (
+    <EventCard
+      variant="featured"
+      kicker={kickers[kind]}
+      month={parts.month}
+      day={parts.day}
+      title={event.title}
+      location={event.location}
+      meta={kind === 'past' ? attendees : event.meta}
+      rsvpHref={kind === 'next' ? event.rsvpHref : undefined}
+    >
+      {event.agenda && <Agenda items={event.agenda} />}
+      {onBackToNext && (
+        <Button variant="text" onClick={onBackToNext}>
+          ← Back to next meetup
+        </Button>
+      )}
+    </EventCard>
+  );
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 export function EventsScreen() {
   const { events, status, now } = useEvents();
   const next = selectNext(events, now);
   const upcoming = selectUpcoming(events, now);
   const past = selectPast(events, now);
-  const nextParts = next ? eventDateParts(next.date) : null;
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const featured = events.find((e) => e.id === selectedId) ?? next;
+  const featuredKind: FeaturedKind =
+    featured === next ? 'next' : past.some((e) => e.id === featured?.id) ? 'past' : 'upcoming';
+
+  // On phones the card sits above the list, so bring it into view on select.
+  // 'nearest' is a no-op when the card is already on screen.
+  const featuredRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (selectedId === null) return;
+    featuredRef.current?.scrollIntoView({
+      block: 'nearest',
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    });
+  }, [selectedId]);
+
+  const rowProps = (e: Event) => ({
+    selected: e.id === selectedId,
+    onSelect: () => {
+      setSelectedId(e.id);
+    },
+  });
 
   return (
     <div>
@@ -73,19 +142,20 @@ export function EventsScreen() {
       )}
 
       <section className="grid-events" style={{ padding: '44px 0 8px' }}>
-        {next && nextParts && (
-          <EventCard
-            variant="featured"
-            kicker={`Next meetup · ${nextParts.weekday} ${nextParts.month} ${nextParts.day}`}
-            month={nextParts.month}
-            day={nextParts.day}
-            title={next.title}
-            location={next.location}
-            meta={next.meta}
-            rsvpHref={next.rsvpHref}
-          >
-            {next.agenda && <Agenda items={next.agenda} />}
-          </EventCard>
+        {featured && (
+          <div ref={featuredRef} style={{ scrollMarginTop: 24 }}>
+            <FeaturedEvent
+              event={featured}
+              kind={featuredKind}
+              onBackToNext={
+                next && featuredKind !== 'next'
+                  ? () => {
+                      setSelectedId(null);
+                    }
+                  : undefined
+              }
+            />
+          </div>
         )}
 
         <div>
@@ -94,7 +164,7 @@ export function EventsScreen() {
               <Kicker muted>Upcoming</Kicker>
               <div style={{ marginTop: 12 }}>
                 {upcoming.map((e) => (
-                  <EventRow key={e.id} event={e} />
+                  <EventRow key={e.id} event={e} {...rowProps(e)} />
                 ))}
               </div>
             </>
@@ -108,7 +178,7 @@ export function EventsScreen() {
             Past meetups
           </h2>
           {past.map((e) => (
-            <EventRow key={e.id} event={e} past />
+            <EventRow key={e.id} event={e} past {...rowProps(e)} />
           ))}
         </section>
       )}

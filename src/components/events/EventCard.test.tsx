@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { EventCard } from '@components/events/EventCard.tsx';
 
 describe('EventCard', () => {
@@ -73,7 +73,6 @@ describe('EventCard', () => {
       render(
         <EventCard
           variant="row"
-          href="#/events"
           day="Thu Aug 20"
           title="Topic TBD"
           location="Lebanon, NH"
@@ -88,7 +87,7 @@ describe('EventCard', () => {
 
     it('given a past event, mutes it by color instead of fading the row', () => {
       // given / when
-      render(
+      const { container } = render(
         <EventCard
           variant="row"
           past
@@ -99,10 +98,31 @@ describe('EventCard', () => {
         />,
       );
       // then: opacity would stack on the muted ink and fail contrast
-      const row = screen.getByText('June Meetup').closest('a');
-      expect(row?.style.opacity).toBe('');
+      expect((container.firstChild as HTMLElement).style.opacity).toBe('');
       expect(screen.getByText('June Meetup')).toHaveStyle({ color: 'var(--ink-2)' });
       expect(screen.getByText('18 here')).toHaveStyle({ color: 'var(--ink-3)' });
+    });
+
+    it('given no onSelect, is not interactive', () => {
+      render(<EventCard variant="row" day="Thu Aug 20" title="Topic TBD" />);
+      expect(screen.queryByRole('button')).toBeNull();
+      expect(screen.queryByRole('link')).toBeNull();
+    });
+
+    it('given onSelect, is a button that reports its selected state', () => {
+      // given
+      const onSelect = vi.fn();
+      render(
+        <EventCard variant="row" day="Thu Aug 20" title="Topic TBD" selected onSelect={onSelect} />,
+      );
+      // when
+      fireEvent.click(screen.getByRole('button', { name: /Topic TBD/ }));
+      // then
+      expect(onSelect).toHaveBeenCalledOnce();
+      expect(screen.getByRole('button', { name: /Topic TBD/ })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
     });
   });
 });

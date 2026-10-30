@@ -36,7 +36,8 @@ export const Row = () => (
   <div style={{ maxWidth: 520 }}>
     <EventCard
       variant="row"
-      href="#"
+      selected
+      onSelect={() => undefined}
       day="Thu Aug 20"
       title="Topic TBD"
       location="Lebanon, NH"
@@ -44,7 +45,7 @@ export const Row = () => (
     />
     <EventCard
       variant="row"
-      href="#"
+      onSelect={() => undefined}
       day="Wed Sep 17"
       title="Topic TBD"
       location="White River Jct, VT"
