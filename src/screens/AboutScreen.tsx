@@ -26,14 +26,10 @@ export function AboutScreen() {
       <section style={{ maxWidth: 600 }}>
         <p style={{ color: 'var(--ink-2)', fontSize: 16, marginTop: 16 }}>
           <span style={{ color: 'var(--ink)' }}>
-            Upper Valley Tech is a monthly meetup for people in the tech space who live around the
-            Connecticut River valley.
+            Upper Valley Tech is a monthly meetup for people in the tech space who live in and
+            around the Upper Valley.
           </span>{' '}
           Based out of Lebanon, NH, we welcome everyone to join us on a monthly basis.
-        </p>
-        <p style={{ color: 'var(--ink-2)', fontSize: 16, marginTop: 16 }}>
-          We're starting with a community gathering, but we're hoping to grow into mentorship,
-          hackathons, and fun hobby projects.
         </p>
       </section>
 
