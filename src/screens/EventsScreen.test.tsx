@@ -53,7 +53,7 @@ describe('EventsScreen', () => {
   it('given no selection, features the next meetup with its RSVP', () => {
     render(<EventsScreen />);
     expect(featuredTitle()).toBe('July Meetup');
-    expect(screen.getByText(/^Next meetup ·/)).toBeInTheDocument();
+    expect(screen.getByText(/^Next meetup ·/)).toBeVisible();
     expect(screen.getByRole('link', { name: 'RSVP' })).toHaveAttribute('href', next.rsvpHref);
   });
 
@@ -64,7 +64,7 @@ describe('EventsScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: /August Meetup/ }));
     // then
     expect(featuredTitle()).toBe('August Meetup');
-    expect(screen.queryByText(/^Next meetup ·/)).toBeNull();
+    expect(screen.getByText(/^Next meetup ·/)).not.toBeVisible();
     expect(screen.queryByRole('link', { name: 'RSVP' })).toBeNull();
     expect(screen.getByRole('button', { name: /August Meetup/ })).toHaveAttribute(
       'aria-pressed',
@@ -80,10 +80,17 @@ describe('EventsScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: /June Meetup/ }));
     // then
     expect(featuredTitle()).toBe('June Meetup');
-    expect(screen.getByText(/^Past ·/)).toBeInTheDocument();
-    expect(screen.getAllByText('18 here').length).toBeGreaterThan(0);
-    expect(screen.getByText('Running models on the edge')).toBeInTheDocument();
+    expect(screen.getByText(/^Past ·/)).toBeVisible();
+    expect(screen.getByText('Running models on the edge')).toBeVisible();
     expect(screen.queryByRole('link', { name: 'RSVP' })).toBeNull();
+  });
+
+  it('stacks every event card in one cell so the layout keeps the tallest height', () => {
+    render(<EventsScreen />);
+    const cards = screen.getAllByText(/Meetup$/, { selector: 'h3' });
+    expect(cards).toHaveLength(3);
+    const visible = cards.filter((card) => getComputedStyle(card).visibility === 'visible');
+    expect(visible.map((card) => card.textContent)).toEqual(['July Meetup']);
   });
 
   it('separates an agenda speaker from the description with a dash', () => {

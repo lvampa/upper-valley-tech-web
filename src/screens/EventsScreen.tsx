@@ -103,8 +103,11 @@ export function EventsScreen() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const featured = events.find((e) => e.id === selectedId) ?? next;
-  const featuredKind: FeaturedKind =
-    featured === next ? 'next' : past.some((e) => e.id === featured?.id) ? 'past' : 'upcoming';
+  const kindOf = (e: Event): FeaturedKind =>
+    e === next ? 'next' : past.includes(e) ? 'past' : 'upcoming';
+  const backToNext = () => {
+    setSelectedId(null);
+  };
 
   // On phones the card sits above the list, so bring it into view on select.
   // 'nearest' is a no-op when the card is already on screen.
@@ -146,18 +149,22 @@ export function EventsScreen() {
 
       <section className="grid-events" style={{ padding: '44px 0 8px' }}>
         {featured && (
-          <div ref={featuredRef} style={{ scrollMarginTop: 24 }}>
-            <FeaturedEvent
-              event={featured}
-              kind={featuredKind}
-              onBackToNext={
-                next && featuredKind !== 'next'
-                  ? () => {
-                      setSelectedId(null);
-                    }
-                  : undefined
-              }
-            />
+          // Every event's card is stacked in one grid cell and all but the
+          // featured one are hidden, so the cell is always as tall as the
+          // tallest card and the sections below don't jump on select.
+          <div ref={featuredRef} style={{ display: 'grid', scrollMarginTop: 24 }}>
+            {events.map((e) => (
+              <div
+                key={e.id}
+                style={{ gridArea: '1 / 1', visibility: e === featured ? 'visible' : 'hidden' }}
+              >
+                <FeaturedEvent
+                  event={e}
+                  kind={kindOf(e)}
+                  onBackToNext={next && e !== next ? backToNext : undefined}
+                />
+              </div>
+            ))}
           </div>
         )}
 
