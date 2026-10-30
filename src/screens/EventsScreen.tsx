@@ -2,8 +2,6 @@ import { EventCard } from '@components/events/EventCard.tsx';
 import { EventRow } from '@components/events/EventRow.tsx';
 import { EventsStatus } from '@components/events/EventsStatus.tsx';
 import { Kicker } from '@components/core/Kicker.tsx';
-import { Card } from '@components/core/Card.tsx';
-import { Button } from '@components/core/Button.tsx';
 import { PageHeading, Period } from '@components/core/PageHeading.tsx';
 import { selectNext, selectUpcoming, selectPast, eventDateParts } from '@data/events.ts';
 import { useEvents } from '@lib/useEvents.ts';
@@ -105,17 +103,6 @@ export function EventsScreen() {
               </div>
             </>
           )}
-          <Card padding="20px 22px" style={{ marginTop: 32 }}>
-            <h3 className="card-title" style={{ marginBottom: 6 }}>
-              Want to give a talk?
-            </h3>
-            <p style={{ color: 'var(--ink-2)', fontSize: 13, marginBottom: 14 }}>
-              Five minutes, any topic you're into. First-time speakers especially welcome.
-            </p>
-            <Button variant="ghost" href="/about">
-              Pitch a talk →
-            </Button>
-          </Card>
         </div>
       </section>
 
