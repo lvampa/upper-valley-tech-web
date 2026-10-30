@@ -30,7 +30,7 @@ function Agenda({ items }: { items: AgendaItem[] }) {
             alignItems: 'baseline',
           }}
         >
-          <span style={{ color: 'var(--ink-3)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>
+          <span style={{ color: 'var(--ink-3)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
             {r.time}
           </span>
           <span style={{ color: r.open ? 'var(--ink-3)' : 'var(--ink-2)' }}>

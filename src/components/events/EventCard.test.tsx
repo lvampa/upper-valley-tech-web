@@ -85,5 +85,24 @@ describe('EventCard', () => {
       expect(screen.getByText('Lebanon, NH')).toBeInTheDocument();
       expect(screen.getByText('6:30 PM')).toBeInTheDocument();
     });
+
+    it('given a past event, mutes it by color instead of fading the row', () => {
+      // given / when
+      render(
+        <EventCard
+          variant="row"
+          past
+          day="Wed, Jun 18"
+          title="June Meetup"
+          location="Lebanon, NH"
+          time="18 here"
+        />,
+      );
+      // then: opacity would stack on the muted ink and fail contrast
+      const row = screen.getByText('June Meetup').closest('a');
+      expect(row?.style.opacity).toBe('');
+      expect(screen.getByText('June Meetup')).toHaveStyle({ color: 'var(--ink-2)' });
+      expect(screen.getByText('18 here')).toHaveStyle({ color: 'var(--ink-3)' });
+    });
   });
 });

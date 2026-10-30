@@ -12,7 +12,7 @@ export function Kicker({ muted = false, as: Tag = 'span', style, children }: Kic
     <Tag
       style={{
         fontFamily: 'var(--font-mono)',
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: 500,
         letterSpacing: '0.16em',
         textTransform: 'uppercase',

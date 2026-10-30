@@ -81,6 +81,9 @@ export function EventCard({
   ) : null;
 
   if (variant === 'row') {
+    // Past rows step down one ink level rather than fading with opacity, which
+    // pushed the muted text below WCAG AA contrast.
+    const primaryInk = past ? 'var(--ink-2)' : 'var(--ink)';
     return (
       <a
         href={past ? undefined : href}
@@ -100,22 +103,19 @@ export function EventCard({
           color: 'var(--ink-2)',
           fontSize: 14,
           textDecoration: 'none',
-          opacity: past ? 0.62 : 1,
           ...style,
         }}
       >
-        <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)', fontSize: 13 }}>
-          {day}
-        </div>
+        <div style={{ fontFamily: 'var(--font-mono)', color: primaryInk, fontSize: 13 }}>{day}</div>
         <div>
-          <div style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)', fontWeight: 500 }}>
+          <div style={{ color: primaryInk, fontFamily: 'var(--font-display)', fontWeight: 500 }}>
             {title}
           </div>
           {location ? (
-            <div style={{ color: 'var(--ink-3)', fontSize: 12, marginTop: 2 }}>{location}</div>
+            <div style={{ color: 'var(--ink-3)', fontSize: 13, marginTop: 2 }}>{location}</div>
           ) : null}
         </div>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-3)' }}>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--ink-3)' }}>
           {time}
         </div>
         <div
@@ -207,7 +207,7 @@ export function EventCard({
           <div
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: 11,
+              fontSize: 12,
               letterSpacing: '0.14em',
               color: 'var(--ink-3)',
               textTransform: 'uppercase',
@@ -229,7 +229,7 @@ export function EventCard({
           <div
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: 11,
+              fontSize: 12,
               color: 'var(--coral)',
               textTransform: 'uppercase',
               letterSpacing: '0.14em',
