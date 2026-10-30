@@ -104,12 +104,9 @@ export function EventsScreen() {
 
       {past.length > 0 && (
         <section style={{ padding: '40px 0' }}>
-          <h2 className="section-title" style={{ marginBottom: 4 }}>
+          <h2 className="section-title" style={{ marginBottom: 18 }}>
             Past meetups
           </h2>
-          <p style={{ color: 'var(--ink-2)', fontSize: 14, marginBottom: 18 }}>
-            Small but growing — the first one was eight people in a room.
-          </p>
           {past.map((e) => (
             <EventRow key={e.id} event={e} past />
           ))}
