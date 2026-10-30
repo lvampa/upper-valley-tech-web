@@ -119,6 +119,10 @@ describe('EventCard', () => {
       fireEvent.click(screen.getByRole('button', { name: /Topic TBD/ }));
       // then
       expect(onSelect).toHaveBeenCalledOnce();
+      // Inline style, since jsdom's computed style does not resolve var().
+      const { style } = screen.getByRole('button', { name: /Topic TBD/ });
+      expect(style.borderTop).toBe('1px solid var(--line)');
+      expect(style.fontSize).toBe('14px');
       expect(screen.getByRole('button', { name: /Topic TBD/ })).toHaveAttribute(
         'aria-pressed',
         'true',

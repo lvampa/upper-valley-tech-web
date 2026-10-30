@@ -120,12 +120,14 @@ export function EventCard({
           setHover(false);
         }}
         style={{
+          // The border reset comes first, or the shorthand wipes the row's border-top.
+          border: 'none',
+          fontFamily: 'inherit',
+          fontWeight: 'inherit',
+          lineHeight: 'inherit',
           ...rowStyle,
           width: '100%',
-          border: 'none',
-          borderTop: rowStyle.borderTop,
           background: shade ? `rgba(244, 241, 236, ${String(shade)})` : 'transparent',
-          font: 'inherit',
           textAlign: 'left',
           cursor: 'pointer',
           transition: 'background var(--dur-base) var(--ease)',
