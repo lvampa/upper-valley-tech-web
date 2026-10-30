@@ -1,6 +1,5 @@
 import { Kicker } from '@components/core/Kicker.tsx';
 import { Card } from '@components/core/Card.tsx';
-import { Avatar } from '@components/core/Avatar.tsx';
 import { Button } from '@components/core/Button.tsx';
 import { EmailCapture } from '@components/core/EmailCapture.tsx';
 import { PageHeading, Period } from '@components/core/PageHeading.tsx';
@@ -33,20 +32,7 @@ export function AboutScreen() {
         </p>
       </section>
 
-      <section className="grid-2col" style={{ marginTop: 40 }}>
-        <Card>
-          <Kicker muted>Who runs it</Kicker>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 16 }}>
-            <Avatar initials="CA" />
-            <div>
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15 }}>
-                Connor Abdelnoor
-              </div>
-              <div style={{ color: 'var(--ink-3)', fontSize: 13 }}>Organizer · founded 2025</div>
-            </div>
-          </div>
-        </Card>
-
+      <section style={{ marginTop: 40 }}>
         <Card>
           <Kicker muted>Get involved</Kicker>
           <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55, marginTop: 16 }}>
@@ -79,6 +65,12 @@ export function AboutScreen() {
         >
           Get in touch
         </h3>
+        <div style={{ margin: '16px 0' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15 }}>
+            Connor Abdelnoor
+          </div>
+          <div style={{ color: 'var(--ink-3)', fontSize: 13 }}>Organizer · founded 2025</div>
+        </div>
         <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55, maxWidth: 460 }}>
           Questions, talk pitches, or want to host a future meetup? Drop your email and a note, or
           reach out directly at{' '}
