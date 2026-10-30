@@ -37,7 +37,10 @@ function Agenda({ items }: { items: AgendaItem[] }) {
           </span>
           <span style={{ color: r.open ? 'var(--ink-3)' : 'var(--ink-2)' }}>
             {r.speaker ? (
-              <b style={{ color: 'var(--ink)', fontWeight: 600 }}>{r.speaker} </b>
+              <>
+                <b style={{ color: 'var(--ink)', fontWeight: 600 }}>{r.speaker}</b>
+                {' - '}
+              </>
             ) : null}
             {r.description}
           </span>

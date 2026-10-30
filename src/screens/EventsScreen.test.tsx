@@ -86,6 +86,20 @@ describe('EventsScreen', () => {
     expect(screen.queryByRole('link', { name: 'RSVP' })).toBeNull();
   });
 
+  it('separates an agenda speaker from the description with a dash', () => {
+    // given
+    const talk = { time: '7:00', speaker: 'Ada', description: 'Compilers' };
+    mockUseEvents.mockReturnValue({
+      events: [{ ...next, agenda: [talk] }],
+      status: 'success',
+      now,
+    });
+    // when
+    render(<EventsScreen />);
+    // then
+    expect(screen.getByText('Ada').parentElement).toHaveTextContent(/^Ada - Compilers$/);
+  });
+
   it('given another event is featured, goes back to the next meetup', () => {
     // given
     render(<EventsScreen />);
