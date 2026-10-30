@@ -23,12 +23,10 @@ export function AboutScreen() {
       </header>
 
       <section style={{ maxWidth: 600 }}>
-        <p style={{ color: 'var(--ink-2)', fontSize: 16, marginTop: 16 }}>
-          <span style={{ color: 'var(--ink)' }}>
-            Upper Valley Tech is a monthly meetup for people in the tech space who live in and
-            around the Upper Valley.
-          </span>{' '}
-          Based out of Lebanon, NH, we welcome everyone to join us on a monthly basis.
+        <p style={{ color: 'var(--ink)', fontSize: 16, marginTop: 16 }}>
+          Upper Valley Tech is a monthly meetup for people in the tech space who live in and around
+          the Upper Valley. Based out of Lebanon, NH, we welcome everyone to join us on a monthly
+          basis.
         </p>
       </section>
 
