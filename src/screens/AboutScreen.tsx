@@ -65,12 +65,6 @@ export function AboutScreen() {
         >
           Get in touch
         </h3>
-        <div style={{ margin: '16px 0' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15 }}>
-            Connor Abdelnoor
-          </div>
-          <div style={{ color: 'var(--ink-3)', fontSize: 13 }}>Organizer · founded 2025</div>
-        </div>
         <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55, maxWidth: 460 }}>
           Questions, talk pitches, or want to host a future meetup? Drop your email and a note, or
           reach out directly at{' '}
@@ -82,6 +76,12 @@ export function AboutScreen() {
         <div style={{ marginTop: 16 }}>
           <EmailCapture buttonLabel="Send" status={status} onSubmit={handleSubmit} maxWidth={420} />
           <div ref={captchaRef} data-sitekey={CAPTCHA_KEY} data-size="invisible" />
+        </div>
+        <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid var(--line)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15 }}>
+            Connor Abdelnoor
+          </div>
+          <div style={{ color: 'var(--ink-3)', fontSize: 13 }}>Organizer · founded 2025</div>
         </div>
       </Card>
     </div>
