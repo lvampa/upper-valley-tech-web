@@ -64,10 +64,6 @@ export function EventsScreen() {
             </>
           }
         />
-        <p style={{ color: 'var(--ink-2)', fontSize: 17, marginTop: 16, maxWidth: 520 }}>
-          Every meetup, past and future. We get together monthly across the Upper Valley — show up
-          to any of them.
-        </p>
       </header>
 
       {(status === 'loading' || status === 'error') && (
