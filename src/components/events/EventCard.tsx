@@ -34,7 +34,6 @@ interface EventCardProps {
   time?: string;
   kicker?: string;
   meta?: string[];
-  /** Row variant: makes the row a button that selects this event. */
   onSelect?: () => void;
   selected?: boolean;
   past?: boolean;
@@ -73,8 +72,6 @@ export function EventCard({
   ) : null;
 
   if (variant === 'row') {
-    // Past rows step down one ink level rather than fading with opacity, which
-    // pushed the muted text below WCAG AA contrast.
     const primaryInk = past ? 'var(--ink-2)' : 'var(--ink)';
     const rowStyle: CSSProperties = {
       display: 'grid',

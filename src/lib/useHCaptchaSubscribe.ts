@@ -5,15 +5,13 @@ import { submitSubscription } from './subscribe.ts';
 // Load the vanilla-hcaptcha custom element once, on first use.
 if (typeof window !== 'undefined') {
   void import('@hcaptcha/vanilla-hcaptcha').catch(() => {
-    // Element failed to load. handleSubmit reports an error, since the endpoint needs a token.
+    // handleSubmit reports an error if this fails.
   });
 }
 
-// vanilla-hcaptcha upgrades <h-captcha> elements with an execute() method.
 interface CaptchaElement extends HTMLElement {
   execute(): void;
 }
-// Narrow to it via a type guard (no cast) so we never assume it's present.
 function isCaptcha(el: HTMLElement): el is CaptchaElement {
   return 'execute' in el && typeof el.execute === 'function';
 }
@@ -28,14 +26,14 @@ function runCaptcha(el: HTMLElement | null): boolean {
   }
 }
 
-// vanilla-hcaptcha copies the token onto the `verified` Event itself as `token`.
+// The token is a property on the Event itself, not on `detail`.
 function readToken(e: Event): string {
   return 'token' in e && typeof e.token === 'string' ? e.token : '';
 }
 
 /**
  * Drives the invisible-hCaptcha + events API subscribe flow.
- * Returns the current status, a ref to attach to the captcha <div>, and a
+ * Returns the current status, a ref for <InvisibleCaptcha>, and a
  * form submit handler. On submit: validate → run captcha → POST on verify.
  */
 export function useHCaptchaSubscribe() {

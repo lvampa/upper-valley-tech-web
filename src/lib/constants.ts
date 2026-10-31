@@ -2,8 +2,7 @@
 
 export const CONTACT_EMAIL = 'uppervalleytechnology@gmail.com';
 
-// Invisible hCaptcha for the signup form. hCaptcha won't run on localhost with a
-// real key, so dev uses its public test key, which the local worker's test secret accepts.
+// hCaptcha won't run on localhost with a real key, so dev uses its public test key.
 const HCAPTCHA_TEST_KEY = '10000000-ffff-ffff-ffff-000000000001';
 export const CAPTCHA_KEY = import.meta.env.DEV
   ? HCAPTCHA_TEST_KEY
