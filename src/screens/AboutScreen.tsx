@@ -43,15 +43,14 @@ export function AboutScreen() {
           Get in touch
         </h3>
         <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55, maxWidth: 460 }}>
-          Questions, talk pitches, or want to host a future meetup? Drop your email and a note, or
-          reach out directly at{' '}
+          Questions, talk pitches, or want to host a future meetup? Email{' '}
           <a href={`mailto:${CONTACT_EMAIL}`} className="link-coral">
             {CONTACT_EMAIL}
           </a>
-          .
+          . To hear about upcoming meetups, leave your email below.
         </p>
         <div style={{ marginTop: 16 }}>
-          <EmailCapture buttonLabel="Send" status={status} onSubmit={handleSubmit} maxWidth={420} />
+          <EmailCapture status={status} onSubmit={handleSubmit} maxWidth={420} />
           <InvisibleCaptcha ref={captchaRef} />
         </div>
         <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid var(--line)' }}>
