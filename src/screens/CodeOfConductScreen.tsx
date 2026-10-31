@@ -36,7 +36,7 @@ export function CodeOfConductScreen() {
         />
         <p style={{ color: 'var(--ink-2)', fontSize: 17, marginTop: 16 }}>
           Upper Valley Tech is meant to be a welcoming place for anyone curious about building
-          things. A few ground rules keep it that way.
+          things.
         </p>
       </header>
 
@@ -96,7 +96,7 @@ export function CodeOfConductScreen() {
           <a href={`mailto:${CONTACT_EMAIL}`} className="link-coral">
             {CONTACT_EMAIL}
           </a>
-          . Reports stay confidential, and we'll take them seriously.
+          .
         </p>
       </Card>
     </div>
