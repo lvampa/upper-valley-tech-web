@@ -31,7 +31,6 @@ const past: Event = {
   location: 'Lebanon, NH',
   time: '6:30 PM',
   rsvpHref: 'https://example.com/jun',
-  attendees: '18 here',
   agenda: [{ time: '7:05', description: 'Running models on the edge' }],
 };
 
@@ -73,7 +72,7 @@ describe('EventsScreen', () => {
     expect(scrollIntoView).toHaveBeenCalled();
   });
 
-  it('given a past row is clicked, features it with attendees and agenda', () => {
+  it('given a past row is clicked, features it with its agenda', () => {
     // given
     render(<EventsScreen />);
     // when

@@ -68,7 +68,6 @@ function FeaturedEvent({
     upcoming: date,
     past: `Past · ${date}`,
   };
-  const attendees = event.attendees ? [event.attendees] : [];
 
   return (
     <EventCard
@@ -78,7 +77,7 @@ function FeaturedEvent({
       day={parts.day}
       title={event.title}
       location={event.location}
-      meta={kind === 'past' ? attendees : event.meta}
+      meta={kind === 'past' ? undefined : event.meta}
       rsvpHref={kind === 'next' ? event.rsvpHref : undefined}
     >
       {event.agenda && <Agenda items={event.agenda} />}
@@ -109,8 +108,7 @@ export function EventsScreen() {
     setSelectedId(null);
   };
 
-  // On phones the card sits above the list, so bring it into view on select.
-  // 'nearest' is a no-op when the card is already on screen.
+  // On phones the card sits above the list. 'nearest' skips the scroll when it's already on screen.
   const featuredRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (selectedId === null) return;
@@ -149,9 +147,7 @@ export function EventsScreen() {
 
       <section className="grid-events" style={{ padding: '44px 0 8px' }}>
         {featured && (
-          // Every event's card is stacked in one grid cell and all but the
-          // featured one are hidden, so the cell is always as tall as the
-          // tallest card and the sections below don't jump on select.
+          // Stacking every card in one cell keeps it at the tallest card's height, so the page doesn't jump.
           <div ref={featuredRef} style={{ display: 'grid', scrollMarginTop: 24 }}>
             {events.map((e) => (
               <div

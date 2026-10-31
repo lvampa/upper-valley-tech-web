@@ -94,13 +94,13 @@ describe('EventCard', () => {
           day="Wed, Jun 18"
           title="June Meetup"
           location="Lebanon, NH"
-          time="18 here"
+          time="6:30 PM"
         />,
       );
-      // then: opacity would stack on the muted ink and fail contrast
+      // then
       expect((container.firstChild as HTMLElement).style.opacity).toBe('');
       expect(screen.getByText('June Meetup')).toHaveStyle({ color: 'var(--ink-2)' });
-      expect(screen.getByText('18 here')).toHaveStyle({ color: 'var(--ink-3)' });
+      expect(screen.getByText('6:30 PM')).toHaveStyle({ color: 'var(--ink-3)' });
     });
 
     it('given no onSelect, is not interactive', () => {
