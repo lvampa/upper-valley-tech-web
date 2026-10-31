@@ -1,9 +1,10 @@
 import { Kicker } from '@components/core/Kicker.tsx';
 import { Card } from '@components/core/Card.tsx';
 import { EmailCapture } from '@components/core/EmailCapture.tsx';
+import { InvisibleCaptcha } from '@components/core/InvisibleCaptcha.tsx';
 import { PageHeading, Period } from '@components/core/PageHeading.tsx';
 import { useHCaptchaSubscribe } from '@lib/useHCaptchaSubscribe.ts';
-import { CONTACT_EMAIL, CAPTCHA_KEY } from '@lib/constants.ts';
+import { CONTACT_EMAIL } from '@lib/constants.ts';
 
 export function AboutScreen() {
   const { status, captchaRef, handleSubmit } = useHCaptchaSubscribe();
@@ -51,7 +52,7 @@ export function AboutScreen() {
         </p>
         <div style={{ marginTop: 16 }}>
           <EmailCapture buttonLabel="Send" status={status} onSubmit={handleSubmit} maxWidth={420} />
-          <div ref={captchaRef} data-sitekey={CAPTCHA_KEY} data-size="invisible" />
+          <InvisibleCaptcha ref={captchaRef} />
         </div>
         <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid var(--line)' }}>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15 }}>

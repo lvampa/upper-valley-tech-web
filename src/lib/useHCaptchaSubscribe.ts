@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef, type SyntheticEvent } from 'react';
 import { type Status } from './types.ts';
-import { FORM_URL, EMAIL_FIELD } from './constants.ts';
+import { submitSubscription } from './subscribe.ts';
 
 // Load the vanilla-hcaptcha custom element once, on first use.
 if (typeof window !== 'undefined') {
   void import('@hcaptcha/vanilla-hcaptcha').catch(() => {
-    // Element failed to load — the form still submits, just unverified.
+    // Element failed to load. handleSubmit reports an error, since the endpoint needs a token.
   });
 }
 
-// vanilla-hcaptcha upgrades the <div> it's attached to with an execute() method.
+// vanilla-hcaptcha upgrades <h-captcha> elements with an execute() method.
 interface CaptchaElement extends HTMLElement {
   execute(): void;
 }
@@ -17,32 +17,30 @@ interface CaptchaElement extends HTMLElement {
 function isCaptcha(el: HTMLElement): el is CaptchaElement {
   return 'execute' in el && typeof el.execute === 'function';
 }
-function runCaptcha(el: HTMLElement | null): void {
-  if (el && isCaptcha(el)) el.execute();
+function runCaptcha(el: HTMLElement | null): boolean {
+  if (!el || !isCaptcha(el)) return false;
+  try {
+    // Throws if the hCaptcha API script hasn't loaded or rendered yet.
+    el.execute();
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-// Pull the token off the `verified` CustomEvent without asserting its shape.
+// vanilla-hcaptcha copies the token onto the `verified` Event itself as `token`.
 function readToken(e: Event): string {
-  if (
-    'detail' in e &&
-    typeof e.detail === 'object' &&
-    e.detail !== null &&
-    'response' in e.detail &&
-    typeof e.detail.response === 'string'
-  ) {
-    return e.detail.response;
-  }
-  return '';
+  return 'token' in e && typeof e.token === 'string' ? e.token : '';
 }
 
 /**
- * Drives the invisible-hCaptcha + Google Form subscribe flow.
+ * Drives the invisible-hCaptcha + Apps Script subscribe flow.
  * Returns the current status, a ref to attach to the captcha <div>, and a
  * form submit handler. On submit: validate → run captcha → POST on verify.
  */
 export function useHCaptchaSubscribe() {
   const [status, setStatus] = useState<Status>('idle');
-  const captchaRef = useRef<HTMLDivElement | null>(null);
+  const captchaRef = useRef<HTMLElement | null>(null);
   const emailRef = useRef('');
 
   useEffect(() => {
@@ -50,10 +48,7 @@ export function useHCaptchaSubscribe() {
     if (!el) return;
 
     const onVerified = (e: Event) => {
-      const fd = new FormData();
-      fd.append(EMAIL_FIELD, emailRef.current);
-      fd.append('h-captcha-response', readToken(e));
-      fetch(FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' })
+      submitSubscription(emailRef.current, readToken(e))
         .then(() => {
           setStatus('success');
         })
@@ -80,8 +75,7 @@ export function useHCaptchaSubscribe() {
       return;
     }
     emailRef.current = email;
-    setStatus('loading');
-    runCaptcha(captchaRef.current);
+    setStatus(runCaptcha(captchaRef.current) ? 'loading' : 'error');
   };
 
   return { status, captchaRef, handleSubmit };

@@ -3,12 +3,12 @@ import { EventRow } from '@components/events/EventRow.tsx';
 import { EventsStatus } from '@components/events/EventsStatus.tsx';
 import { Kicker } from '@components/core/Kicker.tsx';
 import { EmailCapture } from '@components/core/EmailCapture.tsx';
+import { InvisibleCaptcha } from '@components/core/InvisibleCaptcha.tsx';
 import { Button } from '@components/core/Button.tsx';
 import { SectionLabel } from '@components/core/SectionLabel.tsx';
 import { selectNext, selectUpcoming, eventDateParts } from '@data/events.ts';
 import { useEvents } from '@lib/useEvents.ts';
 import { useHCaptchaSubscribe } from '@lib/useHCaptchaSubscribe.ts';
-import { CAPTCHA_KEY } from '@lib/constants.ts';
 
 function SubscribeSection() {
   const { status, captchaRef, handleSubmit } = useHCaptchaSubscribe();
@@ -18,7 +18,7 @@ function SubscribeSection() {
         <Kicker muted>Sign up for updates</Kicker>
       </SectionLabel>
       <EmailCapture status={status} onSubmit={handleSubmit} maxWidth="none" />
-      <div ref={captchaRef} data-sitekey={CAPTCHA_KEY} data-size="invisible" />
+      <InvisibleCaptcha ref={captchaRef} />
     </section>
   );
 }
