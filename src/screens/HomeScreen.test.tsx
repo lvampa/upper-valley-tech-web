@@ -41,6 +41,12 @@ describe('HomeScreen', () => {
     expect(screen.getByText(/Couldn't load events/)).toBeInTheDocument();
   });
 
+  it('given no events, shows the same line as an error', () => {
+    mockUseEvents.mockReturnValue({ events: [], status: 'success', now: new Date() });
+    render(<HomeScreen />);
+    expect(screen.getByText(/Couldn't load events/)).toBeInTheDocument();
+  });
+
   it('given events, shows the next meetup', () => {
     mockUseEvents.mockReturnValue({ events: [future], status: 'success', now: new Date() });
     render(<HomeScreen />);

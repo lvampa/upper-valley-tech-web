@@ -25,6 +25,7 @@ function SubscribeSection() {
 
 export function HomeScreen() {
   const { events, status, now } = useEvents();
+  const noEvents = status === 'success' && events.length === 0;
   const next = selectNext(events, now);
   const upcoming = selectUpcoming(events, now).slice(0, 2);
   const nextParts = next ? eventDateParts(next.date) : null;
@@ -43,9 +44,9 @@ export function HomeScreen() {
         </p>
       </section>
 
-      {(status === 'loading' || status === 'error') && (
+      {(status === 'loading' || status === 'error' || noEvents) && (
         <section style={{ maxWidth: 520, margin: '52px auto 0' }}>
-          <EventsStatus status={status} />
+          <EventsStatus status={noEvents ? 'error' : status} />
         </section>
       )}
 
