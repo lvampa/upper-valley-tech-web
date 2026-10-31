@@ -6,27 +6,22 @@ const rules = [
   {
     number: '01',
     heading: "Everyone's welcome",
-    body: 'Students, hobbyists, career engineers, founders, the merely curious — regardless of background, identity, or experience level. Don\'t gatekeep who counts as "technical."',
   },
   {
     number: '02',
     heading: 'Be respectful',
-    body: "Harassment, discrimination, and demeaning comments aren't tolerated — in talks, in conversation, or online. Assume good faith and give people room to learn out loud.",
   },
   {
     number: '03',
     heading: "It's not a sales floor",
-    body: "Come to share what you're working on and meet people, not to pitch, recruit aggressively, or harvest the room. A quick \"we're hiring\" is fine; cornering people isn't.",
   },
   {
     number: '04',
     heading: 'Respect the space',
-    body: "We're guests at every venue. Clean up after yourself, drink responsibly, and follow whatever house rules the host sets.",
   },
   {
     number: '05',
     heading: 'Listen to the organizers',
-    body: "Organizers may ask anyone whose behavior is making the meetup unwelcoming to leave. We'd rather never need this rule.",
   },
 ];
 
@@ -80,12 +75,10 @@ export function CodeOfConductScreen() {
                   fontWeight: 600,
                   fontSize: 18,
                   letterSpacing: '-0.015em',
-                  marginBottom: 6,
                 }}
               >
                 {r.heading}
               </h3>
-              <p style={{ color: 'var(--ink-2)', fontSize: 15, lineHeight: 1.6 }}>{r.body}</p>
             </div>
           </div>
         ))}
