@@ -9,18 +9,14 @@ const rules = [
   },
   {
     number: '02',
-    heading: 'Be respectful',
+    heading: "Don't be a dick",
   },
   {
     number: '03',
-    heading: "It's not a sales floor",
-  },
-  {
-    number: '04',
     heading: 'Respect the space',
   },
   {
-    number: '05',
+    number: '04',
     heading: 'Listen to the organizers',
   },
 ];
@@ -33,7 +29,7 @@ export function CodeOfConductScreen() {
           kicker="Code of conduct"
           title={
             <>
-              Be decent
+              A few ground rules
               <Period />
             </>
           }
@@ -54,7 +50,7 @@ export function CodeOfConductScreen() {
               display: 'grid',
               gridTemplateColumns: '36px 1fr',
               gap: 18,
-              alignItems: 'start',
+              alignItems: 'baseline',
             }}
           >
             <div
@@ -63,7 +59,6 @@ export function CodeOfConductScreen() {
                 fontSize: 12,
                 color: 'var(--coral)',
                 letterSpacing: '0.1em',
-                paddingTop: 3,
               }}
             >
               {r.number}
