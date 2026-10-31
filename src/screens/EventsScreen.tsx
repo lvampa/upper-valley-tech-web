@@ -96,6 +96,7 @@ function prefersReducedMotion() {
 
 export function EventsScreen() {
   const { events, status, now } = useEvents();
+  const noEvents = status === 'success' && events.length === 0;
   const next = selectNext(events, now);
   const upcoming = selectUpcoming(events, now);
   const past = selectPast(events, now);
@@ -139,9 +140,9 @@ export function EventsScreen() {
         />
       </header>
 
-      {(status === 'loading' || status === 'error') && (
+      {(status === 'loading' || status === 'error' || noEvents) && (
         <section style={{ padding: '44px 0 8px' }}>
-          <EventsStatus status={status} />
+          <EventsStatus status={noEvents ? 'error' : status} />
         </section>
       )}
 

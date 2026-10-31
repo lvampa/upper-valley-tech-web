@@ -106,6 +106,12 @@ describe('EventsScreen', () => {
     expect(screen.getByText('Ada').parentElement).toHaveTextContent(/^Ada - Compilers$/);
   });
 
+  it('given no events, shows the same line as an error', () => {
+    mockUseEvents.mockReturnValue({ events: [], status: 'success', now });
+    render(<EventsScreen />);
+    expect(screen.getByText(/Couldn't load events/)).toBeVisible();
+  });
+
   it('given another event is featured, goes back to the next meetup', () => {
     // given
     render(<EventsScreen />);

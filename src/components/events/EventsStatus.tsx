@@ -15,7 +15,7 @@ export function EventsStatus({ status }: EventsStatusProps) {
   if (status === 'error') {
     return (
       <p style={{ color: 'var(--ink-3)', fontSize: 14 }}>
-        Couldn't load events — try again shortly.
+        Couldn't load events - try again shortly.
       </p>
     );
   }
