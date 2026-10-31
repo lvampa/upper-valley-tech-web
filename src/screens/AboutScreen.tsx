@@ -1,6 +1,5 @@
 import { Kicker } from '@components/core/Kicker.tsx';
 import { Card } from '@components/core/Card.tsx';
-import { Button } from '@components/core/Button.tsx';
 import { EmailCapture } from '@components/core/EmailCapture.tsx';
 import { PageHeading, Period } from '@components/core/PageHeading.tsx';
 import { useHCaptchaSubscribe } from '@lib/useHCaptchaSubscribe.ts';
@@ -30,28 +29,7 @@ export function AboutScreen() {
         </p>
       </section>
 
-      <section style={{ marginTop: 40 }}>
-        <Card>
-          <Kicker muted>Get involved</Kicker>
-          <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55, marginTop: 16 }}>
-            A few ways in: come to a meetup, give a five-minute talk, or help line up a venue.
-            First-time speakers are the whole point — you don't need to be an expert.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
-            <Button variant="text" href="/events">
-              → See upcoming events
-            </Button>
-            <Button variant="text" href="/about">
-              → Pitch a talk
-            </Button>
-            <Button variant="text" href="/code-of-conduct">
-              → Read the code of conduct
-            </Button>
-          </div>
-        </Card>
-      </section>
-
-      <Card padding={28} style={{ marginTop: 32 }}>
+      <Card padding={28} style={{ marginTop: 40 }}>
         <Kicker>Contact</Kicker>
         <h3
           style={{
