@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+  # deploy.yml calls this so main only deploys after the same checks pass.
+  workflow_call:
 
 # Checks are read-only; no repo write access needed.
 permissions:
@@ -29,3 +31,28 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+
+  preview:
+    # Fork PRs don't get the Cloudflare secrets.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    needs: checks
+    runs-on: ubuntu-latest
+    env:
+      VITE_EVENTS_API_URL: https://api.uppervalleytech.org
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      # Any --branch other than main is a preview, served at <branch>.uppervalley-tech.pages.dev.
+      - name: Deploy preview to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=uppervalley-tech --branch=${{ github.head_ref }}
+      - run: echo "Preview at ${{ steps.deploy.outputs.deployment-url }}" >> "$GITHUB_STEP_SUMMARY"

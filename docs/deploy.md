@@ -33,15 +33,20 @@ Deploys run from GitHub Actions with a scoped Cloudflare API token instead, so t
 Two workflows:
 
 - **`.github/workflows/ci.yml`** runs on every PR: format, lint, typecheck, and test.
-- **`.github/workflows/deploy.yml`** runs on push to **`production`**.
-  It builds and deploys:
+  If those pass, it deploys a preview with `--branch=<pr branch>`, served at `<pr branch>.uppervalley-tech.pages.dev`.
+  The link is in the run summary.
+- **`.github/workflows/deploy.yml`** runs on push to **`main`**.
+  It runs the same checks, then builds and deploys to production:
 
   ```
-  wrangler pages deploy dist --project-name=uppervalley-tech --branch=production
+  wrangler pages deploy dist --project-name=uppervalley-tech --branch=main
   ```
 
-Gating is via branch protection (below).
-PRs must pass `checks` before merging to `production`, so only vetted code reaches the deploy workflow.
+`main` is the Pages project's production branch, and Direct Upload projects can't change it.
+Any other `--branch` value uploads a preview, and the custom domain won't update.
+
+Previews call the production events API from the browser, which only allows `https://uppervalleytech.org`.
+So a preview keeps the events baked in at build time, since the browser's own fetch is blocked.
 
 **Required GitHub repo secrets** (Settings → Secrets and variables → Actions):
 
@@ -49,9 +54,12 @@ PRs must pass `checks` before merging to `production`, so only vetted code reach
   Nothing broader.
 - `CLOUDFLARE_ACCOUNT_ID`: from Workers & Pages → account overview.
 
-Also set the Pages project's **production branch to `production`** so `--branch=production` deploys register as production.
 The custom domain serves the latest production deployment.
-Recommended: branch-protect `production` to require the `checks` job before merge.
+
+**Branch protection** (Settings → Branches → add a rule for `main`):
+
+- Require a pull request before merging.
+- Require status checks to pass, and pick `checks`.
 
 ### Manual deploy (from local)
 
@@ -93,7 +101,7 @@ Content-Type: application/json
 - `<token>` is a fine-grained PAT scoped to this repo with **Contents: write** (the permission the dispatch endpoint requires), or a classic PAT with the `repo` scope.
   Store it as a secret in the events service, never in this repo.
 - This fires the `repository_dispatch: events-updated` trigger in `.github/workflows/deploy.yml`.
-  It checks out `production` and runs the same build and Cloudflare Pages deploy as a push to `production`, re-baking the snapshot.
+  It checks out `main` and runs the same checks, build, and deploy as a push to `main`, re-baking the snapshot.
 - The **sender** lives in the separate `upper-valley-tech-events-mcp` service and is out of scope for this repo.
   This section documents the contract only.
 - Browsers still get live data regardless.
