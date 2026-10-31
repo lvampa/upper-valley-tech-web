@@ -37,7 +37,7 @@ Two workflows:
   It builds and deploys:
 
   ```
-  wrangler pages deploy dist --project-name=uppervalley-tech --branch=production
+  wrangler pages deploy dist --project-name=uppervalley-tech --branch=main
   ```
 
 Gating is via branch protection (below).
@@ -49,7 +49,9 @@ PRs must pass `checks` before merging to `production`, so only vetted code reach
   Nothing broader.
 - `CLOUDFLARE_ACCOUNT_ID`: from Workers & Pages → account overview.
 
-Also set the Pages project's **production branch to `production`** so `--branch=production` deploys register as production.
+The Pages project's production branch is `main`, and Direct Upload projects can't change it, so deploys pass `--branch=main`.
+That is only the Pages label; the GitHub branch that triggers the deploy is still `production`.
+Any other `--branch` value uploads a preview, and the custom domain won't update.
 The custom domain serves the latest production deployment.
 Recommended: branch-protect `production` to require the `checks` job before merge.
 

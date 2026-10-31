@@ -8,4 +8,4 @@
 set -e
 cd "$(dirname "$0")/.." # run from repo root regardless of where it's invoked
 VITE_EVENTS_API_URL=https://api.uppervalleytech.org npm run build
-npx wrangler pages deploy dist --project-name=uppervalley-tech --branch=production
+npx wrangler pages deploy dist --project-name=uppervalley-tech --branch=main

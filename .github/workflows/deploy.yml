@@ -37,12 +37,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      # Registers as a PRODUCTION deployment only if the Pages project's
-      # production branch is set to `production`. Otherwise this uploads a
-      # preview and the custom domain won't update. See docs/deploy.md.
+      # `main` is the Pages project's production branch, which Direct Upload
+      # projects can't change. Any other name uploads a preview.
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=uppervalley-tech --branch=production
+          command: pages deploy dist --project-name=uppervalley-tech --branch=main
