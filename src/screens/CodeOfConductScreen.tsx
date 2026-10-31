@@ -35,8 +35,7 @@ export function CodeOfConductScreen() {
           }
         />
         <p style={{ color: 'var(--ink-2)', fontSize: 17, marginTop: 16 }}>
-          Upper Valley Tech is meant to be a welcoming place for anyone curious about building
-          things.
+          Upper Valley Tech is meant to be a welcoming place for all.
         </p>
       </header>
 
