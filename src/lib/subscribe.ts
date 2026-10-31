@@ -1,19 +1,19 @@
 import { z } from 'zod';
-import { SUBSCRIBE_URL } from './constants.ts';
+import { env } from '@lib/env.ts';
 
 const subscribeReplySchema = z.object({ ok: z.boolean(), error: z.string().optional() });
 
-/** Add an email to the mailing list via the Apps Script endpoint. Throws if it isn't added. */
+/** Add an email to the mailing list via the events API. Throws if it isn't added. */
 export async function submitSubscription(email: string, captchaToken: string): Promise<void> {
-  // A form-encoded body keeps this a simple CORS request, which Apps Script allows.
-  const body = new URLSearchParams({ email, 'h-captcha-response': captchaToken });
-  const res = await fetch(SUBSCRIBE_URL, { method: 'POST', body });
-  if (!res.ok) {
-    throw new Error(`Subscribe request failed: ${String(res.status)} ${res.statusText}`);
-  }
+  const res = await fetch(`${env.VITE_EVENTS_API_URL}/subscribe`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, captchaToken }),
+  });
 
-  const reply = subscribeReplySchema.parse(await res.json());
-  if (!reply.ok) {
-    throw new Error(`Subscribe rejected: ${reply.error ?? 'unknown'}`);
-  }
+  const reply = subscribeReplySchema.safeParse(await res.json().catch(() => null));
+  if (res.ok && reply.success && reply.data.ok) return;
+
+  const reason = reply.success ? (reply.data.error ?? 'unknown') : `HTTP ${String(res.status)}`;
+  throw new Error(`Subscribe failed: ${reason}`);
 }

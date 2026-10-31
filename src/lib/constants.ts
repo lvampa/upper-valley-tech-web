@@ -2,6 +2,9 @@
 
 export const CONTACT_EMAIL = 'uppervalleytechnology@gmail.com';
 
-// Mailing-list signup: Apps Script web app (google/subscribe.gs) + invisible hCaptcha.
-export const SUBSCRIBE_URL = 'REPLACE_WITH_WEB_APP_URL';
-export const CAPTCHA_KEY = '25ba8b1c-6b18-4e16-aa18-d558d1c85032';
+// Invisible hCaptcha for the signup form. hCaptcha won't run on localhost with a
+// real key, so dev uses its public test key, which the local worker's test secret accepts.
+const HCAPTCHA_TEST_KEY = '10000000-ffff-ffff-ffff-000000000001';
+export const CAPTCHA_KEY = import.meta.env.DEV
+  ? HCAPTCHA_TEST_KEY
+  : '25ba8b1c-6b18-4e16-aa18-d558d1c85032';

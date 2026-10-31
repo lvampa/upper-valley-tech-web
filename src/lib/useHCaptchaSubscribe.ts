@@ -34,7 +34,7 @@ function readToken(e: Event): string {
 }
 
 /**
- * Drives the invisible-hCaptcha + Apps Script subscribe flow.
+ * Drives the invisible-hCaptcha + events API subscribe flow.
  * Returns the current status, a ref to attach to the captcha <div>, and a
  * form submit handler. On submit: validate → run captcha → POST on verify.
  */

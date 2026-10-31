@@ -1,40 +1,34 @@
 # Mailing list signup
 
-The signup forms on Home and About send an email plus an invisible hCaptcha token to a Google Apps Script web app.
-The script checks the token with hCaptcha, then adds the email to a Google Sheet.
-The code is in `google/subscribe.gs`, and the site side is in `src/lib/subscribe.ts`.
+The signup forms on Home and About send an email plus an invisible hCaptcha token to `POST /subscribe` on the events API.
+The events worker checks the token with hCaptcha, then stores the email in D1.
+The site side is in `src/lib/subscribe.ts` and `src/lib/useHCaptchaSubscribe.ts`.
 
-## Set up the Sheet and script
+## API contract
 
-1. Create a Google Sheet, and put `Subscribed at` in A1 and `Email` in B1.
-2. In the Sheet, open Extensions, then Apps Script.
-3. Replace the contents of `Code.gs` with `google/subscribe.gs`, and save.
-4. Open Project Settings, then Script Properties, and add `HCAPTCHA_SECRET` with the secret from the hCaptcha dashboard.
-5. Click Deploy, then New deployment, and choose Web app.
-6. Set Execute as to Me, and set Who has access to Anyone.
-   "Anyone with a Google account" will not work, because visitors get a login page instead of JSON.
-7. Authorize the script when asked, and copy the web app URL that ends in `/exec`.
-8. Set `SUBSCRIBE_URL` in `src/lib/constants.ts` to that URL.
+Request body, as JSON:
 
-## Check it
-
-Test the script without a browser:
-
-```sh
-curl -sL -d email=test@example.com -d h-captcha-response=bad "$SUBSCRIBE_URL"
+```json
+{ "email": "ada@example.com", "captchaToken": "<token from hCaptcha>" }
 ```
 
-It should print `{"ok":false,"error":"captcha"}`.
-Anything else, such as an HTML page, means the deployment or its access setting is wrong.
+Replies:
 
-Then sign up once on the live site, and check that the row shows up in the Sheet.
+- `200 {"ok":true}` when the email is stored, including when it was already on the list.
+- `400 {"ok":false,"error":"invalid_email"}` when the email is malformed.
+- `400 {"ok":false,"error":"captcha_failed"}` when hCaptcha rejects the token.
+- `500 {"ok":false,"error":"server"}` when something else goes wrong.
 
-## Things to know
+The site treats anything but a `200 {"ok":true}` as a failed signup.
 
-- The hCaptcha dashboard must list `uppervalleytech.org` for the site key.
-- hCaptcha does not run on `localhost`, so test real signups on the deployed site.
-- Editing the script needs a new deployment version (Deploy, then Manage deployments, then Edit, then New version).
-  The URL stays the same.
-- Signups are lowercased, and an email already in column B is not added again.
-- Nothing here sends email.
-  Email the list from Gmail, or move to a newsletter service when it outgrows that.
+## Captcha keys
+
+- Production builds use the real site key in `src/lib/constants.ts`, and the worker uses the matching secret.
+- Dev builds use hCaptcha's public test site key, because hCaptcha does not run on `localhost` with a real key.
+  The local worker needs the matching test secret, `0x0000000000000000000000000000000000000000`, in `.dev.vars`.
+- The hCaptcha dashboard must list `uppervalleytech.org` for the real site key.
+
+## Getting the list
+
+Organizers use the `list_subscribers` MCP tool, which returns the emails as one comma-separated line.
+Paste it into Bcc in Gmail, and remove anyone who asks with `remove_subscriber`.
