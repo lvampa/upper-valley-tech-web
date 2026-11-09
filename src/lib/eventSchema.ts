@@ -10,6 +10,7 @@ export const agendaItemSchema = z.object({
   open: z.boolean().optional(),
 });
 
+// Unknown keys are stripped, so fields the API drops or adds don't break parsing.
 export const eventSchema = z.object({
   id: z.string(),
   /** ISO "YYYY-MM-DD"; drives past/upcoming logic. */
@@ -18,7 +19,6 @@ export const eventSchema = z.object({
   location: z.string(),
   /** Display time, e.g. "6:30 PM". */
   time: z.string(),
-  rsvpHref: z.string().optional(),
   /** Featured card sub-lines, e.g. ["Doors 6:30 · Talks 7:00"]. */
   meta: z.array(z.string()).optional(),
   agenda: z.array(agendaItemSchema).optional(),

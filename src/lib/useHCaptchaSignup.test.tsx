@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { useHCaptchaSubscribe } from '@lib/useHCaptchaSubscribe.ts';
-import { submitSubscription } from '@lib/subscribe.ts';
+import { useHCaptchaSignup } from '@lib/useHCaptchaSignup.ts';
+import { submitSignup } from '@lib/signup.ts';
 import { InvisibleCaptcha } from '@components/core/InvisibleCaptcha.tsx';
 
 // The real element loads hCaptcha's script from the network; tests stand in for it.
 vi.mock('@hcaptcha/vanilla-hcaptcha', () => ({}));
-vi.mock('@lib/subscribe.ts', () => ({ submitSubscription: vi.fn() }));
-const mockSubmit = vi.mocked(submitSubscription);
+vi.mock('@lib/signup.ts', () => ({ submitSignup: vi.fn() }));
+const mockSubmit = vi.mocked(submitSignup);
 
 function SubscribeForm() {
-  const { status, captchaRef, handleSubmit } = useHCaptchaSubscribe();
+  const { status, captchaRef, handleSubmit } = useHCaptchaSignup('/subscribe');
   return (
     <form
       onSubmit={(e) => {
@@ -45,7 +45,7 @@ beforeEach(() => {
   mockSubmit.mockReset();
 });
 
-describe('useHCaptchaSubscribe', () => {
+describe('useHCaptchaSignup', () => {
   it('renders the captcha as an <h-captcha> with the site key, so the library upgrades it', () => {
     const captcha = renderForm();
     expect(captcha).toHaveAttribute('site-key');
@@ -65,7 +65,7 @@ describe('useHCaptchaSubscribe', () => {
     await waitFor(() => {
       expect(screen.getByRole('status')).toHaveTextContent('success');
     });
-    expect(mockSubmit).toHaveBeenCalledWith('ada@example.com', 'token-123');
+    expect(mockSubmit).toHaveBeenCalledWith('/subscribe', 'ada@example.com', 'token-123');
   });
 
   it('given the endpoint rejects the signup, shows an error', async () => {

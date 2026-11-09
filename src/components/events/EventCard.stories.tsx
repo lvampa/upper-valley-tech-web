@@ -12,7 +12,7 @@ export const Compact = () => (
       title="Lightning Talks & Pizza"
       time="6:30 PM"
       location="Lebanon, NH"
-      rsvpHref="https://lu.ma/example"
+      rsvpEventId="2026-07-16"
     />
   </div>
 );
@@ -27,7 +27,7 @@ export const Featured = () => (
       title="Lightning Talks & Pizza"
       location="CCBA Witherell Recreation Center, Lebanon NH"
       meta={['Doors 6:30 · Talks 7:00 · Hang 8:00']}
-      rsvpHref="https://lu.ma/example"
+      rsvpEventId="2026-07-16"
     />
   </div>
 );

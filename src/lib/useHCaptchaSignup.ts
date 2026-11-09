@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, type SyntheticEvent } from 'react';
 import { type Status } from './types.ts';
-import { submitSubscription } from './subscribe.ts';
+import { submitSignup, type SignupPath } from './signup.ts';
 
 // Load the vanilla-hcaptcha custom element once, on first use.
 if (typeof window !== 'undefined') {
@@ -32,11 +32,11 @@ function readToken(e: Event): string {
 }
 
 /**
- * Drives the invisible-hCaptcha + events API subscribe flow.
+ * Drives the invisible-hCaptcha + events API signup flow for one endpoint.
  * Returns the current status, a ref for <InvisibleCaptcha>, and a
  * form submit handler. On submit: validate → run captcha → POST on verify.
  */
-export function useHCaptchaSubscribe() {
+export function useHCaptchaSignup(path: SignupPath) {
   const [status, setStatus] = useState<Status>('idle');
   const captchaRef = useRef<HTMLElement | null>(null);
   const emailRef = useRef('');
@@ -46,7 +46,7 @@ export function useHCaptchaSubscribe() {
     if (!el) return;
 
     const onVerified = (e: Event) => {
-      submitSubscription(emailRef.current, readToken(e))
+      submitSignup(path, emailRef.current, readToken(e))
         .then(() => {
           setStatus('success');
         })
@@ -64,7 +64,7 @@ export function useHCaptchaSubscribe() {
       el.removeEventListener('verified', onVerified);
       el.removeEventListener('error', onError);
     };
-  }, []);
+  }, [path]);
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     const email = e.currentTarget.querySelector<HTMLInputElement>('input')?.value.trim() ?? '';

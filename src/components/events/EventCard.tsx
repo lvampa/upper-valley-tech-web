@@ -1,7 +1,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
 import { Card } from '@components/core/Card.tsx';
-import { Button } from '@components/core/Button.tsx';
 import { Kicker } from '@components/core/Kicker.tsx';
+import { RsvpForm } from './RsvpForm.tsx';
 
 type EventCardVariant = 'compact' | 'featured' | 'row';
 
@@ -37,8 +37,8 @@ interface EventCardProps {
   onSelect?: () => void;
   selected?: boolean;
   past?: boolean;
-  rsvpHref?: string;
-  rsvpLabel?: string;
+  /** Shows an RSVP email form for this event. */
+  rsvpEventId?: string;
   children?: ReactNode;
   style?: CSSProperties;
 }
@@ -56,20 +56,14 @@ export function EventCard({
   onSelect,
   selected = false,
   past = false,
-  rsvpHref,
-  rsvpLabel,
+  rsvpEventId,
   children,
   style,
 }: EventCardProps) {
   const [hover, setHover] = useState(false);
 
-  // RSVP is an external link (e.g. a Luma event page), shown only when the
-  // event has an rsvpHref. Opens in a new tab.
-  const rsvpButton = rsvpHref ? (
-    <Button variant="primary" href={rsvpHref} target="_blank" rel="noopener noreferrer">
-      {rsvpLabel ?? 'RSVP'}
-    </Button>
-  ) : null;
+  // Keyed by event so a new event starts with a fresh form status.
+  const rsvpForm = rsvpEventId ? <RsvpForm key={rsvpEventId} eventId={rsvpEventId} /> : null;
 
   if (variant === 'row') {
     const primaryInk = past ? 'var(--ink-2)' : 'var(--ink)';
@@ -189,9 +183,7 @@ export function EventCard({
           ))}
         </div>
         {children}
-        {rsvpButton ? (
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>{rsvpButton}</div>
-        ) : null}
+        {rsvpForm}
       </Card>
     );
   }
@@ -201,7 +193,7 @@ export function EventCard({
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '80px 1fr auto',
+          gridTemplateColumns: '80px 1fr',
           gap: 20,
           alignItems: 'center',
         }}
@@ -258,8 +250,8 @@ export function EventCard({
             {location}
           </div>
         </div>
-        {rsvpButton}
       </div>
+      {rsvpForm ? <div style={{ marginTop: 18 }}>{rsvpForm}</div> : null}
     </Card>
   );
 }

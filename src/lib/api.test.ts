@@ -43,6 +43,24 @@ describe('fetching events', () => {
     });
   });
 
+  describe('given a payload that still sends rsvpHref', () => {
+    it('parses it and drops the field the site no longer uses', async () => {
+      // given
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(() =>
+          Promise.resolve(
+            jsonResponse({ events: [{ ...goodEvent, rsvpHref: 'https://lu.ma/old' }] }),
+          ),
+        ),
+      );
+      // when
+      const events = await fetchEvents();
+      // then
+      expect(events[0]).not.toHaveProperty('rsvpHref');
+    });
+  });
+
   describe('given a well-formed payload with no events', () => {
     it('resolves to an empty array', async () => {
       // given
