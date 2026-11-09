@@ -12,7 +12,6 @@ export function RsvpForm({ eventId }: { eventId: string }) {
         onSubmit={handleSubmit}
         buttonLabel="RSVP"
         loadingLabel="Saving…"
-        successMessage="You're on the list."
         maxWidth="none"
       />
       <InvisibleCaptcha ref={captchaRef} />
