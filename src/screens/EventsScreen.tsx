@@ -78,7 +78,7 @@ function FeaturedEvent({
       title={event.title}
       location={event.location}
       meta={kind === 'past' ? undefined : event.meta}
-      rsvpHref={kind === 'next' ? event.rsvpHref : undefined}
+      rsvpEventId={kind === 'next' ? event.id : undefined}
     >
       {event.agenda && <Agenda items={event.agenda} />}
       {onBackToNext && (

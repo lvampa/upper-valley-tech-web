@@ -2,9 +2,12 @@ import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { EventCard } from '@components/events/EventCard.tsx';
 
+// The real element loads hCaptcha's script from the network.
+vi.mock('@hcaptcha/vanilla-hcaptcha', () => ({}));
+
 describe('EventCard', () => {
   describe('compact variant', () => {
-    it('renders the date parts, title, and an RSVP action', () => {
+    it('renders the date parts, title, and an RSVP email form', () => {
       // given / when
       render(
         <EventCard
@@ -15,23 +18,20 @@ describe('EventCard', () => {
           title="Lightning Talks & Pizza"
           time="6:30 PM"
           location="Lebanon, NH"
-          rsvpHref="https://lu.ma/uvt-test"
-          rsvpLabel="RSVP"
+          rsvpEventId="2026-07-16"
         />,
       );
       // then
       expect(screen.getByText('Lightning Talks & Pizza')).toBeInTheDocument();
       expect(screen.getByText('16')).toBeInTheDocument();
       expect(screen.getByText(/6:30 PM/)).toBeInTheDocument();
-      // RSVP renders as an external link to the event's rsvpHref (a Luma page)
-      expect(screen.getByRole('link', { name: 'RSVP' })).toHaveAttribute(
-        'href',
-        'https://lu.ma/uvt-test',
-      );
+      expect(screen.getByRole('textbox', { name: 'Email address' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'RSVP' })).toBeInTheDocument();
+      expect(document.querySelector('h-captcha')).not.toBeNull();
     });
 
-    it('omits the RSVP link when the event has no rsvpHref', () => {
-      // given an event without an RSVP link / when rendered
+    it('omits the RSVP form when no event id is given', () => {
+      // given / when
       render(
         <EventCard
           variant="compact"
@@ -43,8 +43,8 @@ describe('EventCard', () => {
           location="Lebanon, NH"
         />,
       );
-      // then no RSVP action is shown (no dead link)
-      expect(screen.queryByRole('link', { name: 'RSVP' })).toBeNull();
+      // then
+      expect(screen.queryByRole('button', { name: 'RSVP' })).toBeNull();
     });
   });
 

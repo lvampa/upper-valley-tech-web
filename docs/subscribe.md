@@ -2,11 +2,15 @@
 
 The signup forms on Home and About send an email plus an invisible hCaptcha token to `POST /subscribe` on the events API.
 The events worker checks the token with hCaptcha, then stores the email in D1.
-The site side is in `src/lib/subscribe.ts` and `src/lib/useHCaptchaSubscribe.ts`.
+The site side is in `src/lib/signup.ts` and `src/lib/useHCaptchaSignup.ts`.
+
+The RSVP form on the next meetup's card uses the same flow, posting to `POST /events/<id>/rsvp`.
+The id is URL-encoded.
+An RSVP also adds the person to the mailing list; the worker does that, not the site.
 
 ## API contract
 
-Request body, as JSON:
+Both endpoints take the same request body, as JSON:
 
 ```json
 { "email": "ada@example.com", "captchaToken": "<token from hCaptcha>" }
@@ -18,6 +22,7 @@ Replies:
 - `400 {"ok":false,"error":"invalid_email"}` when the email is malformed.
 - `400 {"ok":false,"error":"captcha_failed"}` when hCaptcha rejects the token.
 - `500 {"ok":false,"error":"server"}` when something else goes wrong.
+- `404 {"ok":false,"error":"not_found"}` from the RSVP endpoint only, when the event is unknown, cancelled, or already over.
 
 The site treats anything but a `200 {"ok":true}` as a failed signup.
 

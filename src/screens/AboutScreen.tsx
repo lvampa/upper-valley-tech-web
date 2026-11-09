@@ -3,11 +3,11 @@ import { Card } from '@components/core/Card.tsx';
 import { EmailCapture } from '@components/core/EmailCapture.tsx';
 import { InvisibleCaptcha } from '@components/core/InvisibleCaptcha.tsx';
 import { PageHeading, Period } from '@components/core/PageHeading.tsx';
-import { useHCaptchaSubscribe } from '@lib/useHCaptchaSubscribe.ts';
+import { useHCaptchaSignup } from '@lib/useHCaptchaSignup.ts';
 import { CONTACT_EMAIL } from '@lib/constants.ts';
 
 export function AboutScreen() {
-  const { status, captchaRef, handleSubmit } = useHCaptchaSubscribe();
+  const { status, captchaRef, handleSubmit } = useHCaptchaSignup('/subscribe');
   return (
     <div>
       <header style={{ padding: '48px 0 40px' }}>
@@ -15,8 +15,8 @@ export function AboutScreen() {
           kicker="About"
           title={
             <>
-              What
-              <Period />
+              Why Upper Valley Tech
+              <Period mark="?" />
             </>
           }
         />
@@ -43,7 +43,7 @@ export function AboutScreen() {
           Get in touch
         </h3>
         <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55, maxWidth: 460 }}>
-          Questions, talk pitches, or want to host a future meetup? Email{' '}
+          Questions, feedback? Email{' '}
           <a href={`mailto:${CONTACT_EMAIL}`} className="link-coral">
             {CONTACT_EMAIL}
           </a>
