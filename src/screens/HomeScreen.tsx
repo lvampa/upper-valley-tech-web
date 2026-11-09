@@ -8,10 +8,10 @@ import { Button } from '@components/core/Button.tsx';
 import { SectionLabel } from '@components/core/SectionLabel.tsx';
 import { selectNext, selectUpcoming, eventDateParts } from '@data/events.ts';
 import { useEvents } from '@lib/useEvents.ts';
-import { useHCaptchaSubscribe } from '@lib/useHCaptchaSubscribe.ts';
+import { useHCaptchaSignup } from '@lib/useHCaptchaSignup.ts';
 
 function SubscribeSection() {
-  const { status, captchaRef, handleSubmit } = useHCaptchaSubscribe();
+  const { status, captchaRef, handleSubmit } = useHCaptchaSignup('/subscribe');
   return (
     <section id="subscribe" style={{ maxWidth: 520, margin: '72px auto 0', scrollMarginTop: 40 }}>
       <SectionLabel>
@@ -69,8 +69,7 @@ export function HomeScreen() {
             title={next.title}
             time={next.time}
             location={next.location}
-            rsvpHref={next.rsvpHref}
-            rsvpLabel="RSVP"
+            rsvpEventId={next.id}
           />
         </section>
       )}

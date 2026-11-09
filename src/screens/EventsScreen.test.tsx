@@ -4,6 +4,8 @@ import { EventsScreen } from '@screens/EventsScreen.tsx';
 import { useEvents } from '@lib/useEvents.ts';
 import { type Event } from '@lib/types.ts';
 
+// The real element loads hCaptcha's script from the network.
+vi.mock('@hcaptcha/vanilla-hcaptcha', () => ({}));
 vi.mock('@lib/useEvents.ts', () => ({ useEvents: vi.fn() }));
 const mockUseEvents = vi.mocked(useEvents);
 
@@ -14,7 +16,6 @@ const next: Event = {
   title: 'July Meetup',
   location: 'Lebanon, NH',
   time: '6:30 PM',
-  rsvpHref: 'https://example.com/jul',
 };
 const later: Event = {
   id: 'aug',
@@ -22,7 +23,6 @@ const later: Event = {
   title: 'August Meetup',
   location: 'Hanover, NH',
   time: '6:30 PM',
-  rsvpHref: 'https://example.com/aug',
 };
 const past: Event = {
   id: 'jun',
@@ -30,7 +30,6 @@ const past: Event = {
   title: 'June Meetup',
   location: 'Lebanon, NH',
   time: '6:30 PM',
-  rsvpHref: 'https://example.com/jun',
   agenda: [{ time: '7:05', description: 'Running models on the edge' }],
 };
 
@@ -53,7 +52,7 @@ describe('EventsScreen', () => {
     render(<EventsScreen />);
     expect(featuredTitle()).toBe('July Meetup');
     expect(screen.getByText(/^Next meetup ·/)).toBeVisible();
-    expect(screen.getByRole('link', { name: 'RSVP' })).toHaveAttribute('href', next.rsvpHref);
+    expect(screen.getByRole('button', { name: 'RSVP' })).toBeVisible();
   });
 
   it('given an upcoming row is clicked, features that event without RSVP', () => {
@@ -64,7 +63,7 @@ describe('EventsScreen', () => {
     // then
     expect(featuredTitle()).toBe('August Meetup');
     expect(screen.getByText(/^Next meetup ·/)).not.toBeVisible();
-    expect(screen.queryByRole('link', { name: 'RSVP' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'RSVP' })).toBeNull();
     expect(screen.getByRole('button', { name: /August Meetup/ })).toHaveAttribute(
       'aria-pressed',
       'true',
@@ -81,7 +80,7 @@ describe('EventsScreen', () => {
     expect(featuredTitle()).toBe('June Meetup');
     expect(screen.getByText(/^Past ·/)).toBeVisible();
     expect(screen.getByText('Running models on the edge')).toBeVisible();
-    expect(screen.queryByRole('link', { name: 'RSVP' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'RSVP' })).toBeNull();
   });
 
   it('stacks every event card in one cell so the layout keeps the tallest height', () => {

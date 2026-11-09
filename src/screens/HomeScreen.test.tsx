@@ -6,8 +6,8 @@ import { type Event } from '@lib/types.ts';
 
 vi.mock('@lib/useEvents.ts', () => ({ useEvents: vi.fn() }));
 // Stub the captcha hook so SubscribeSection has no DOM/network side effects.
-vi.mock('@lib/useHCaptchaSubscribe.ts', () => ({
-  useHCaptchaSubscribe: () => ({
+vi.mock('@lib/useHCaptchaSignup.ts', () => ({
+  useHCaptchaSignup: () => ({
     status: 'idle',
     captchaRef: { current: null },
     handleSubmit: vi.fn(),

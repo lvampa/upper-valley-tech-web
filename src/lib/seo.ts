@@ -92,7 +92,7 @@ const eventLd = (e: Event) => ({
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   location: { '@type': 'Place', name: e.location },
   organizer: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
-  url: e.rsvpHref ?? absoluteUrl('/events'),
+  url: absoluteUrl('/events'),
 });
 
 export function buildJsonLd(pathname: string, events: Event[]): object[] {
