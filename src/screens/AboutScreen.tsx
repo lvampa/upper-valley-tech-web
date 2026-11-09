@@ -15,8 +15,8 @@ export function AboutScreen() {
           kicker="About"
           title={
             <>
-              What
-              <Period />
+              Why Upper Valley Tech
+              <Period mark="?" />
             </>
           }
         />
@@ -43,7 +43,7 @@ export function AboutScreen() {
           Get in touch
         </h3>
         <p style={{ color: 'var(--ink-2)', fontSize: 14, lineHeight: 1.55, maxWidth: 460 }}>
-          Questions, talk pitches, or want to host a future meetup? Email{' '}
+          Questions, feedback? Email{' '}
           <a href={`mailto:${CONTACT_EMAIL}`} className="link-coral">
             {CONTACT_EMAIL}
           </a>

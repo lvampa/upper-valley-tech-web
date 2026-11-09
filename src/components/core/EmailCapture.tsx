@@ -51,7 +51,7 @@ export function EmailCapture({
   noteAlign = 'left',
   status = 'idle',
   loadingLabel = 'Subscribing…',
-  successMessage = "You're on the list. See you at the next one.",
+  successMessage = 'Success',
   errorMessage = 'Something went wrong — please try again.',
   retryLabel = 'Try again',
   onSubmit,

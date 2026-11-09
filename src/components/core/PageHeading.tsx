@@ -20,7 +20,7 @@ export function PageHeading({ kicker, title }: PageHeadingProps) {
   );
 }
 
-/** The trailing coral full-stop used on page titles and headlines. */
-export function Period() {
-  return <span style={{ color: 'var(--coral)' }}>.</span>;
+/** The trailing coral mark used on page titles and headlines, a full stop unless a title asks. */
+export function Period({ mark = '.' }: { mark?: '.' | '?' | '!' }) {
+  return <span style={{ color: 'var(--coral)' }}>{mark}</span>;
 }
